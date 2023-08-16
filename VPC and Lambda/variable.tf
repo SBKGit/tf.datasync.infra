@@ -18,7 +18,7 @@ variable "vpc_cidr" {
 }
 
 variable "env" {
-  default = "dev.tfvars"
+  default = ""
   description = "this is mandatory field which need to be given environment.tf file e.g., dev.tfvars"
 }
 
