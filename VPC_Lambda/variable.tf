@@ -28,7 +28,7 @@ variable "public_subnet_cidr" {
 }
 
 variable "public_subnet_availability_zone" {
-  default = ["eu-west-2","eu-west-1"] # Replace with your desired AZ
-  type = "list"
+  default = ["eu-west-2a","eu-west-2b"] # Replace with your desired AZ
+  type = list(string)
   description = "please provide availability zone "
 }

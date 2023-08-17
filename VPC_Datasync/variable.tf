@@ -7,7 +7,7 @@ variable "vpc_cidr" {
 }
 
 variable "env" {
-  default = "dev.tfvars"
+  default = ""
   description = "this is mandatory field which need to be given environment.tf file e.g., dev.tfvars"
 }
 
@@ -17,8 +17,7 @@ variable "private_subnet_cidr" {
 }
 
 variable "private_subnet_availability_zone" {
-  default = ["eu-west-2","eu-west-1"] # Replace with your desired AZ
-  type = "list"
+  default = ["eu-west-2a","eu-west-2b"] # Replace with your desired AZ
   description = "please provide availability zone "
 }
 
@@ -30,20 +29,6 @@ variable "instance_type" {
 variable "ami_version" {
   description = "Version of the AMI to deploy by default it will be pick-up"
   type        = string
-  default     = data.aws_ami.datasync_ami.id
+  default     = ""
 }
 
-data "aws_ami" "datasync_ami" {
-  most_recent = true
-  name_regex  = "Amazon Linux 2"
-
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-}
