@@ -36,6 +36,8 @@ resource "aws_iam_role" "datasync_agent_role" {
   })
 }
 
+
+
 # Attach policies to the DataSync agent role
 resource "aws_iam_policy_attachment" "datasync_agent_policy_attachment" {
   name = "DataSyncAgentRole_${var.env}"

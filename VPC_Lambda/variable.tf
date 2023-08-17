@@ -3,7 +3,7 @@ variable "aws_region" {
 }
 
 variable "lambda_name" {
-  default = "transfer lambda"
+  default = "transfer-lambda"
   description = "please provide valid lambda name"
 }
 
@@ -23,7 +23,7 @@ variable "env" {
 }
 
 variable "public_subnet_cidr" {
-  default = "10.0.1.0/24"
+  default = "10.1.1.0/24"
   description = "This block is for private subnet CIDR block"
 }
 
