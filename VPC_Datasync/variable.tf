@@ -32,3 +32,17 @@ variable "ami_version" {
   default     = ""
 }
 
+variable "datasync_task_options" {
+  type        = map(string)
+  description = "A map of datasync_task options block"
+  default = {
+    verify_mode            = "POINT_IN_TIME_CONSISTENT"
+    posix_permissions      = "NONE"
+    preserve_deleted_files = "REMOVE"
+    uid                    = "NONE"
+    gid                    = "NONE"
+    atime                  = "NONE"
+    mtime                  = "NONE"
+    bytes_per_second       = "-1"
+  }
+}

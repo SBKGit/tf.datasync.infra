@@ -19,16 +19,6 @@ resource "aws_subnet" "public_subnet_vpc2" {
   }
 }
 
-# Create an S3 bucket in VPC2 for landing zone
-resource "aws_s3_bucket" "landing_zone_bucket" {
-  bucket = "landing-zone-bucket-name-${var.env}"  # Replace with your bucket name
-  acl    = "private"
-  tags = {
-    Name = "Landing Zone Bucket"
-    Environment = var.env
-  }
-}
-
 # Create a Lambda function in VPC2
 resource "aws_lambda_function" "transfer_lambda" {
   filename         = "lambda.zip"  # Replace with your Lambda function code
