@@ -46,6 +46,7 @@ resource "aws_iam_policy_attachment" "datasync_Instance_policy_attachment" {
 # Create IAM role for DataSync agent in VPC1
 resource "aws_iam_role" "datasync_task_role" {
   name = "DataSyncTaskRole_${var.env}"
+  managed_policy_arns = [aws_iam_policy.datasync_storage_access_policy.arn]
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -60,12 +61,44 @@ resource "aws_iam_role" "datasync_task_role" {
   })
 }
 
-# Attach policies to the DataSync agent role
-resource "aws_iam_policy_attachment" "datasync_task_policy_attachment" {
-  name = "datasync-task-${var.env}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"  # Replace with appropriate policy ARN
-  roles      = [aws_iam_role.datasync_task_role.name]
+resource "aws_iam_policy" "datasync_storage_access_policy" {
+  name = "datasync_storage_access_policy"
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        Action: [
+          "s3:GetBucketLocation",
+          "s3:ListBucket",
+          "s3:ListBucketMultipartUploads"
+        ],
+        Effect: "Allow",
+        Resource: aws_s3_bucket.landing_zone_bucket.arn
+      },
+      {
+        Action: [
+          "s3:AbortMultipartUpload",
+          "s3:DeleteObject",
+          "s3:GetObject",
+          "s3:ListMultipartUploadParts",
+          "s3:PutObjectTagging",
+          "s3:GetObjectTagging",
+          "s3:PutObject"
+        ],
+        Effect: "Allow",
+        Resource: "${aws_s3_bucket.landing_zone_bucket.arn}/*"
+      }
+    ]
+  })
 }
+
+# Attach policies to the DataSync agent role
+#resource "aws_iam_policy_attachment" "datasync_task_policy_attachment" {
+#  name = "datasync-task-${var.env}"
+#  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"  # Replace with appropriate policy ARN
+#  roles      = [aws_iam_role.datasync_task_role.name]
+#}
 
 # Create a security group for the DataSync service
 resource "aws_security_group" "data_sync_sg" {
@@ -100,29 +133,47 @@ resource "aws_security_group" "data_sync_sg" {
 #  security_group_id = aws_security_group.data_sync_sg.id
 #}
 
-# Create the DataSync Task
-#resource "aws_datasync_task" "data_sync_task" {
-#  name     = "datasync-task-${var.env}"
-#  source_location_arn = "arn:aws:s3:::mysource-bucket-datatf"
-#  destination_location_arn = aws_s3_bucket.landing_zone_bucket.arn
-#  cloudwatch_log_group_arn = "arn:aws:logs:eu-west-2:993765507703:log-group:/aws/datasync:*"
-#
-#  options {
-#    bytes_per_second       = -1
-#    verify_mode            = "${var.datasync_task_options["verify_mode"]}"
-#    posix_permissions      = "${var.datasync_task_options["posix_permissions"]}"
-#    preserve_deleted_files = "${var.datasync_task_options["preserve_deleted_files"]}"
-#    uid                    = "${var.datasync_task_options["uid"]}"
-#    gid                    = "${var.datasync_task_options["gid"]}"
-#    atime                  = "${var.datasync_task_options["atime"]}"
-#    mtime                  = "${var.datasync_task_options["mtime"]}"
-#  }
-#
-#  tags = {
-#    Name = "datasync-task-${var.env}",
-#    Environment  = var.env
-#  }
-#}
+#Create the DataSync Task
+resource "aws_datasync_task" "data_sync_task" {
+  name     = "datasync-task-${var.env}"
+  source_location_arn = aws_s3_bucket.landing_zone_bucket.arn
+  destination_location_arn = aws_s3_bucket.landing_zone_bucket.arn
+
+  options {
+    bytes_per_second       = -1
+    verify_mode            = "${var.datasync_task_options["verify_mode"]}"
+    posix_permissions      = "${var.datasync_task_options["posix_permissions"]}"
+    preserve_deleted_files = "${var.datasync_task_options["preserve_deleted_files"]}"
+    uid                    = "${var.datasync_task_options["uid"]}"
+    gid                    = "${var.datasync_task_options["gid"]}"
+    atime                  = "${var.datasync_task_options["atime"]}"
+    mtime                  = "${var.datasync_task_options["mtime"]}"
+  }
+
+  tags = {
+    Name = "datasync-task-${var.env}",
+    Environment  = var.env
+  }
+}
+
+resource "aws_datasync_location_s3" "source_location" {
+  s3_bucket_arn = aws_s3_bucket.landing_zone_bucket.arn
+  subdirectory  = "/source"
+
+  s3_config {
+    bucket_access_role_arn = aws_iam_role.datasync_task_role.arn
+  }
+}
+
+resource "aws_datasync_location_s3" "destination_location" {
+  s3_bucket_arn = aws_s3_bucket.landing_zone_bucket.arn
+  subdirectory  = "/destination"
+
+  s3_config {
+    bucket_access_role_arn = aws_iam_role.datasync_task_role.arn
+  }
+}
+
 
 ## Create the source location
 #resource "aws_datasync_location_s3" "data_sync_source" {
@@ -140,14 +191,6 @@ resource "aws_security_group" "data_sync_sg" {
 #  }
 #}
 
-resource "aws_datasync_location_s3" "datasync_task" {
-  s3_bucket_arn = aws_s3_bucket.landing_zone_bucket.arn
-  subdirectory  = "/example/prefix"
-
-  s3_config {
-    bucket_access_role_arn = aws_iam_role.datasync_task_role.arn
-  }
-}
 
 # Create an S3 bucket in VPC2 for landing zone
 resource "aws_s3_bucket" "landing_zone_bucket" {
