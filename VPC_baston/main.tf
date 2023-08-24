@@ -114,7 +114,7 @@ resource "aws_iam_role" "baston_instance_role" {
 # Attach policies to the DataSync agent role
 resource "aws_iam_policy_attachment" "baston_instance_policy_attachment" {
   name       = "baston-Instance-${terraform.workspace}"
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM" # Replace with appropriate policy ARN
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess" # Replace with appropriate policy ARN
   roles      = [aws_iam_role.baston_instance_role.name]
 }
 
@@ -166,6 +166,10 @@ resource "aws_instance" "baston_instance" {
               yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
               systemctl start amazon-ssm-agent
               systemctl enable amazon-ssm-agent
+              sudo yum install -y git
+              sudo yum install -y yum-utils shadow-utils
+              sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+              sudo yum install -y terraform
               EOF
   tags = {
     Name        = "Baston Instance ${terraform.workspace}"
