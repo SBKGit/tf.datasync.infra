@@ -25,6 +25,14 @@ cp  <env name>/backend.tf .
 ```sh
 terraform init 
 ```
+- create workspace using terraform 
+```sh
+terraform workspace new <env name>
+```
+- select workspace 
+```sh
+terraform workspace select <env name>
+```
 - terraform plan to check what are we going to deploy
 ```sh
 terraform plan -var-file=<env name>.tfvars  
