@@ -80,7 +80,7 @@ resource "aws_instance" "datasync_instance" {
   security_groups      = [aws_security_group.datasync_security_group.id]
   iam_instance_profile = aws_iam_instance_profile.datasync_profile.name
   key_name             = "Ec2_keypair"
-  user_data = <<-EOF
+  user_data            = <<-EOF
               #!/bin/bash
               yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
               systemctl start amazon-ssm-agent
@@ -107,9 +107,9 @@ resource "aws_security_group" "datasync_agent_security_group" {
   }
 
   egress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = [var.vpc_cidr]
 
   }
@@ -130,7 +130,7 @@ resource "aws_datasync_agent" "datasync_agent" {
   subnet_arns           = [data.terraform_remote_state.vpc_1.outputs.private_subnet_arn]
   vpc_endpoint_id       = aws_vpc_endpoint.datasync_agent_endpoint.id
   private_link_endpoint = data.aws_network_interface.datasync_agent_interface.private_ip
-  name                  = "example"
+  name                  = "datasync_agent_${terraform.workspace}"
 }
 
 
