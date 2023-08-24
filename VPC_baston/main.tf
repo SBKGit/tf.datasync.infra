@@ -27,7 +27,7 @@ resource "aws_vpc" "vpc1" {
   }
 }
 
-#create internet gateway for baston access
+#create internet gateway for bastion access
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc1.id
   tags = {
@@ -94,8 +94,8 @@ resource "aws_subnet" "public_subnet_vpc1" {
 }
 
 # Create IAM role for DataSync agent in VPC1
-resource "aws_iam_role" "baston_instance_role" {
-  name = "baston_${terraform.workspace}"
+resource "aws_iam_role" "bastion_instance_role" {
+  name = "bastion_${terraform.workspace}"
   path = "/app/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -112,21 +112,21 @@ resource "aws_iam_role" "baston_instance_role" {
 }
 
 # Attach policies to the DataSync agent role
-resource "aws_iam_policy_attachment" "baston_instance_policy_attachment" {
-  name       = "baston-Instance-${terraform.workspace}"
+resource "aws_iam_policy_attachment" "bastion_instance_policy_attachment" {
+  name       = "bastion-Instance-${terraform.workspace}"
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess" # Replace with appropriate policy ARN
-  roles      = [aws_iam_role.baston_instance_role.name]
+  roles      = [aws_iam_role.bastion_instance_role.name]
 }
 
 #Attach IAM role with EC2 machine
-resource "aws_iam_instance_profile" "baston_profile" {
-  name = "baston_${terraform.workspace}"
-  role = aws_iam_role.baston_instance_role.name
+resource "aws_iam_instance_profile" "bastion_profile" {
+  name = "bastion_${terraform.workspace}"
+  role = aws_iam_role.bastion_instance_role.name
 }
 
 #create security group to allow traffic
-resource "aws_security_group" "baston_security_group" {
-  name        = "baston_security_group_${terraform.workspace}"
+resource "aws_security_group" "bastion_security_group" {
+  name        = "bastion_security_group_${terraform.workspace}"
   description = "Allow TLS inbound traffic"
   vpc_id      = aws_vpc.vpc1.id
 
@@ -147,19 +147,19 @@ resource "aws_security_group" "baston_security_group" {
   }
 
   tags = {
-    Name        = "baston security group ${terraform.workspace}"
+    Name        = "bastion security group ${terraform.workspace}"
     Environment = terraform.workspace
   }
 }
 
 # Create EC2 instance for DataSync agent in VPC1
-resource "aws_instance" "baston_instance" {
+resource "aws_instance" "bastion_instance" {
   ami                         = data.aws_ami.amazon-linux-2.id
   instance_type               = local.instance_types[terraform.workspace]
   subnet_id                   = aws_subnet.public_subnet_vpc1.id
-  security_groups             = [aws_security_group.baston_security_group.id]
+  security_groups             = [aws_security_group.bastion_security_group.id]
   associate_public_ip_address = true
-  iam_instance_profile        = aws_iam_instance_profile.baston_profile.name
+  iam_instance_profile        = aws_iam_instance_profile.bastion_profile.name
   key_name                    = "Ec2_keypair"
   user_data                   = <<-EOF
               #!/bin/bash
@@ -172,7 +172,7 @@ resource "aws_instance" "baston_instance" {
               sudo yum install -y terraform
               EOF
   tags = {
-    Name        = "Baston Instance ${terraform.workspace}"
+    Name        = "bastion Instance ${terraform.workspace}"
     Environment = terraform.workspace
   }
 }
