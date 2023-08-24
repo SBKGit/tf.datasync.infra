@@ -2,7 +2,7 @@
 resource "aws_vpc" "vpc2" {
   cidr_block = var.vpc_cidr
   tags = {
-    Name = "VPC2_${var.env}"
+    Name        = "VPC2_${var.env}"
     Environment = var.env
   }
 }
@@ -11,28 +11,39 @@ resource "aws_vpc" "vpc2" {
 resource "aws_subnet" "public_subnet_vpc2" {
   vpc_id     = aws_vpc.vpc2.id
   cidr_block = var.public_subnet_cidr
- # availability_zone = var.public_subnet_availability_zone
+  # availability_zone = var.public_subnet_availability_zone
   map_public_ip_on_launch = true
   tags = {
-    Name = "Public Subnet VPC2"
+    Name        = "Public Subnet VPC2"
+    Environment = var.env
+  }
+}
+
+# Create an S3 bucket in VPC2 for landing zone
+resource "aws_s3_bucket" "landing_zone_bucket" {
+  bucket = "landing-zone-bucket-${var.env}" # Replace with your bucket name
+  acl    = "private"
+
+  tags = {
+    Name        = "Landing Zone Bucket"
     Environment = var.env
   }
 }
 
 # Create a Lambda function in VPC2
 resource "aws_lambda_function" "transfer_lambda" {
-  filename         = "lambda.zip"  # Replace with your Lambda function code
+  filename         = "lambda.zip" # Replace with your Lambda function code
   function_name    = "${var.lambda_name}-${var.env}"
   role             = aws_iam_role.lambda_role.arn
   handler          = "index.handler"
   runtime          = "nodejs14.x"
   source_code_hash = filebase64sha256("lambda.zip")
   vpc_config {
-    subnet_ids = [aws_subnet.public_subnet_vpc2.id]
+    subnet_ids         = [aws_subnet.public_subnet_vpc2.id]
     security_group_ids = [aws_security_group.lambda_sg.id]
   }
   tags = {
-    Name = "${var.lambda_name} ${var.env}"
+    Name        = "${var.lambda_name} ${var.env}"
     Environment = var.env
   }
 }
@@ -53,7 +64,7 @@ resource "aws_iam_role" "lambda_role" {
 }
 
 resource "aws_iam_policy" "lambda_policy" {
-  name        = "${var.lambda_name}_${var.env}"
+  name   = "${var.lambda_name}_${var.env}"
   policy = <<EOT
 {
     "Version": "2012-10-17",
@@ -76,8 +87,8 @@ EOT
 }
 
 resource "aws_iam_policy_attachment" "datasync_agent_policy_attachment" {
-  name = "${var.lambda_name}_${var.env}"
-  policy_arn = aws_iam_policy.lambda_policy.arn  # Replace with appropriate policy ARN
+  name       = "${var.lambda_name}_${var.env}"
+  policy_arn = aws_iam_policy.lambda_policy.arn # Replace with appropriate policy ARN
   roles      = [aws_iam_role.lambda_role.name]
 }
 
@@ -102,7 +113,7 @@ resource "aws_cloudwatch_event_rule" "event_rule" {
   event_pattern = jsonencode({
     source      = ["aws.s3"],
     detail_type = ["AWS API Call via CloudTrail"],
-    detail      = {
+    detail = {
       eventSource = ["s3.amazonaws.com"],
       eventName   = ["PutObject"]
     }

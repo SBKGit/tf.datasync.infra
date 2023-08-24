@@ -1,3 +1,3 @@
 #variables for Dev Environment
-env = "dev"
+env        = "dev"
 aws_region = "eu-west-2"
