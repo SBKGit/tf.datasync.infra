@@ -139,9 +139,9 @@ resource "aws_security_group" "baston_security_group" {
   }
 
   egress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = var.egress_cidr
 
   }
