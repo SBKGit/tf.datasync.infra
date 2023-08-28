@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+    
+    parameters {
+
+        string(repo:'', description: 'Please provide repo')
+        string(subdir :'', description: 'Please provide subdir')        
+        choice(name: 'env_name', choices: ['dev', 'uat', 'ppe'], description: 'please select env')
+        booleanParam(name: 'skip_auto_approval', defaultValue: false, description: 'skip approval to get approval')
+
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout your source code repository with a specific subfolder
+                checkout([$class: 'GitSCM', 
+                          branches: [[name: '*/main_workspace']], 
+                          userRemoteConfigs: [[url: 'https://github.com:SBKGit/tf.datasync.infra.git']], 
+                          extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: params.subdir] ]
+            }
+        }
+
+        stage('Deploy Infrastructure') {
+            when {
+                expression { params.ENABLE_DEBUG }
+            }
+            steps {
+                script {
+                    if (params.skip_auto_approval == true ) {
+                        def terraformCmd = "terraform"
+                        def environment = params.TF_VAR_environment
+                        sh "${terraformCmd} init"
+                        sh "${terraformCmd} apply -auto-approve -var-file= " // change the file or updated the file name
+                    }
+                    else {
+                        def terraformCmd = "terraform"
+                        def environment = params.TF_VAR_environment
+                        sh "${terraformCmd} init"
+                        sh "${terraformCmd} apply -var-file=" // change the file or updated the file name\\\
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Clean up resources, notify, or perform other tasks after deployment
+        }
+    }
+}
