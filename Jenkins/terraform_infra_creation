@@ -28,12 +28,16 @@ pipeline {
                     if (params.skip_auto_approval == true ) {
                         def terraformCmd = "terraform"
                         def environment = params.env_name
+                        sh "pwd"
+                        sh "ls -lrt"
                         sh "${terraformCmd} init"
                         sh "${terraformCmd} apply -auto-approve -var-file=dev.tfvars" // change the file or updated the file name
                     }
                     else {
                         def terraformCmd = "terraform"
                         def environment = params.env_name
+                        sh "pwd"
+                        sh "ls -lrt"
                         sh "${terraformCmd} init"
                         sh "${terraformCmd} apply -var-file=dev.tfvars" // change the file or updated the file name\\\
                     }
