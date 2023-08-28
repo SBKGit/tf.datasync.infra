@@ -27,13 +27,13 @@ pipeline {
                 script {
                     if (params.skip_auto_approval == true ) {
                         def terraformCmd = "terraform"
-                        def environment = params.TF_VAR_environment
+                        def environment = params.env_name
                         sh "${terraformCmd} init"
                         sh "${terraformCmd} apply -auto-approve -var-file= " // change the file or updated the file name
                     }
                     else {
                         def terraformCmd = "terraform"
-                        def environment = params.TF_VAR_environment
+                        def environment = params.env_name
                         sh "${terraformCmd} init"
                         sh "${terraformCmd} apply -var-file=" // change the file or updated the file name\\\
                     }
