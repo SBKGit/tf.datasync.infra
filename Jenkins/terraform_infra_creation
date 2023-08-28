@@ -17,7 +17,8 @@ pipeline {
                 checkout([$class: 'GitSCM', 
                           branches: [[name: '*/main_workspace']], 
                           userRemoteConfigs: [[url: 'https://github.com:SBKGit/tf.datasync.infra.git']], 
-                          extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: params.subdir] ]
+                          extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: params.subdir]]
+                ])
             }
         }
 
