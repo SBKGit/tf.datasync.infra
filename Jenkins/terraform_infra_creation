@@ -29,13 +29,13 @@ pipeline {
                         def terraformCmd = "terraform"
                         def environment = params.env_name
                         sh "${terraformCmd} init"
-                        sh "${terraformCmd} apply -auto-approve -var-file= " // change the file or updated the file name
+                        sh "${terraformCmd} apply -auto-approve -var-file=dev.tfvars" // change the file or updated the file name
                     }
                     else {
                         def terraformCmd = "terraform"
                         def environment = params.env_name
                         sh "${terraformCmd} init"
-                        sh "${terraformCmd} apply -var-file=" // change the file or updated the file name\\\
+                        sh "${terraformCmd} apply -var-file=dev.tfvars" // change the file or updated the file name\\\
                     }
                 }
             }
