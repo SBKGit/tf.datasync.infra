@@ -14,6 +14,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout your source code repository with a specific subfolder
+                def subdir_name = params.subdir_name
                 checkout([$class: 'GitSCM', 
                           branches: [[name: '*/main_workspace']], 
                           userRemoteConfigs: [[url: 'https://github.com/SBKGit/tf.datasync.infra.git']], 
