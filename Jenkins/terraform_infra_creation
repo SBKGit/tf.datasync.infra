@@ -3,8 +3,8 @@ pipeline {
     
     parameters {
 
-        string(repo:'', description: 'Please provide repo')
-        string(subdir :'', description: 'Please provide subdir')        
+        string(name:'repo_path', description: 'Please provide repo')
+        string(name :'subdir_name', description: 'Please provide subdir')        
         choice(name: 'env_name', choices: ['dev', 'uat', 'ppe'], description: 'please select env')
         booleanParam(name: 'skip_auto_approval', defaultValue: false, description: 'skip approval to get approval')
 
