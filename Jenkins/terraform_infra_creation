@@ -18,7 +18,7 @@ pipeline {
                 checkout([$class: 'GitSCM', 
                           branches: [[name: '*/main_workspace']], 
                           userRemoteConfigs: [[url: 'https://github.com/SBKGit/tf.datasync.infra.git']], 
-                          extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: params.subdir_name]]
+                          extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: ${subdir_name} ]]
                 ])
             }
         }
@@ -29,18 +29,22 @@ pipeline {
                     if (params.skip_auto_approval == true ) {
                         def terraformCmd = "terraform"
                         def environment = params.env_name
+                        def env_file = "${environment}.tfvars"
                         sh "pwd"
                         sh "ls -lrt"
                         sh "${terraformCmd} init"
-                        sh "${terraformCmd} apply -auto-approve -var-file=dev.tfvars" // change the file or updated the file name
+                        sh "${terraformCmd} plan -var-file=${env_file}"
+                        sh "${terraformCmd} apply -auto-approve -var-file=${env_file}"
                     }
                     else {
                         def terraformCmd = "terraform"
                         def environment = params.env_name
+                        def env_file = "${environment}.tfvars"
                         sh "pwd"
                         sh "ls -lrt"
                         sh "${terraformCmd} init"
-                        sh "${terraformCmd} apply -var-file=dev.tfvars" // change the file or updated the file name\\\
+                        sh "${terraformCmd} plan -var-file=${env_file}"
+                        sh "${terraformCmd} apply -var-file=${env_file}"
                     }
                 }
             }
