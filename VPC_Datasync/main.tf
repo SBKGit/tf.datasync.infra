@@ -79,7 +79,7 @@ resource "aws_instance" "datasync_instance" {
   subnet_id            = data.terraform_remote_state.vpc_1.outputs.private_subnet
   security_groups      = [aws_security_group.datasync_security_group.id]
   iam_instance_profile = aws_iam_instance_profile.datasync_profile.name
-  key_name             = "Ec2_keypair"
+  key_name             = "datasyncdev"
   user_data            = <<-EOF
               #!/bin/bash
               yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
