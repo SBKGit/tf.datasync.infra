@@ -157,7 +157,7 @@ resource "aws_instance" "bastion_instance" {
   ami                         = data.aws_ami.amazon-linux-2.id
   instance_type               = local.instance_types[terraform.workspace]
   subnet_id                   = aws_subnet.public_subnet_vpc1.id
-  security_groups             = [aws_security_group.bastion_security_group.id]
+  vpc_security_group_ids      = [aws_security_group.bastion_security_group.id]
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.bastion_profile.name
   key_name                    = "datasyncdev"

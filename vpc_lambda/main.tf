@@ -151,7 +151,7 @@ resource "aws_cloudwatch_event_target" "event_target" {
 #SQS deadletter queue creation 
 resource "aws_sqs_queue" "deadletter_queue" {
   name = "landing-zone-deadletter-queue-${terraform.workspace}"
- 
+
   tags = {
     Name        = "landing-zone-deadletter-queue-${terraform.workspace}"
     Environment = terraform.workspace
@@ -160,8 +160,8 @@ resource "aws_sqs_queue" "deadletter_queue" {
 
 #SQS queue creation
 resource "aws_sqs_queue" "terraform_queue" {
-  name                      = "landing-zone-queue-${terraform.workspace}"
- 
+  name = "landing-zone-queue-${terraform.workspace}"
+
   #optional setting 
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.deadletter_queue.arn
