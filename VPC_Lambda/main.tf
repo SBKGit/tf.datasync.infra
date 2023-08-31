@@ -2,8 +2,8 @@
 resource "aws_vpc" "vpc2" {
   cidr_block = var.vpc_cidr
   tags = {
-    Name        = "VPC2_${var.env}"
-    Environment = var.env
+    Name        = "VPC2_${terraform.workspace}"
+    Environment = terraform.workspace
   }
 }
 
@@ -15,25 +15,47 @@ resource "aws_subnet" "public_subnet_vpc2" {
   map_public_ip_on_launch = true
   tags = {
     Name        = "Public Subnet VPC2"
-    Environment = var.env
+    Environment = terraform.workspace
   }
 }
 
 # Create an S3 bucket in VPC2 for landing zone
-resource "aws_s3_bucket" "landing_zone_bucket" {
-  bucket = "landing-zone-bucket-${var.env}" # Replace with your bucket name
+resource "aws_s3_bucket" "landing_zone_bucket_1" {
+  bucket = "landing-zone-bucket-1-${terraform.workspace}" # Replace with your bucket name
   acl    = "private"
 
   tags = {
-    Name        = "Landing Zone Bucket"
-    Environment = var.env
+    Name        = "Landing Zone Bucket 1"
+    Environment = terraform.workspace
+  }
+}
+
+# Create an S3 bucket in VPC2 for landing zone
+resource "aws_s3_bucket" "landing_zone_bucket_2" {
+  bucket = "landing-zone-bucket-2-${terraform.workspace}" # Replace with your bucket name
+  acl    = "private"
+
+  tags = {
+    Name        = "Landing Zone Bucket 2"
+    Environment = terraform.workspace
+  }
+}
+
+# Create an S3 bucket in VPC2 for landing zone
+resource "aws_s3_bucket" "landing_zone_bucket_3" {
+  bucket = "landing-zone-bucket-3-${terraform.workspace}" # Replace with your bucket name
+  acl    = "private"
+
+  tags = {
+    Name        = "Landing Zone Bucket 3"
+    Environment = terraform.workspace
   }
 }
 
 # Create a Lambda function in VPC2
 resource "aws_lambda_function" "transfer_lambda" {
   filename         = "lambda.zip" # Replace with your Lambda function code
-  function_name    = "${var.lambda_name}-${var.env}"
+  function_name    = "${var.lambda_name}-${terraform.workspace}"
   role             = aws_iam_role.lambda_role.arn
   handler          = "index.handler"
   runtime          = "nodejs14.x"
@@ -43,14 +65,14 @@ resource "aws_lambda_function" "transfer_lambda" {
     security_group_ids = [aws_security_group.lambda_sg.id]
   }
   tags = {
-    Name        = "${var.lambda_name} ${var.env}"
-    Environment = var.env
+    Name        = "${var.lambda_name} ${terraform.workspace}"
+    Environment = terraform.workspace
   }
 }
 
 # Configure IAM role for Lambda function
 resource "aws_iam_role" "lambda_role" {
-  name = "${var.lambda_name}_${var.env}"
+  name = "${var.lambda_name}_${terraform.workspace}"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -64,7 +86,7 @@ resource "aws_iam_role" "lambda_role" {
 }
 
 resource "aws_iam_policy" "lambda_policy" {
-  name   = "${var.lambda_name}_${var.env}"
+  name   = "${var.lambda_name}_${terraform.workspace}"
   policy = <<EOT
 {
     "Version": "2012-10-17",
@@ -87,14 +109,14 @@ EOT
 }
 
 resource "aws_iam_policy_attachment" "datasync_agent_policy_attachment" {
-  name       = "${var.lambda_name}_${var.env}"
+  name       = "${var.lambda_name}_${terraform.workspace}"
   policy_arn = aws_iam_policy.lambda_policy.arn # Replace with appropriate policy ARN
   roles      = [aws_iam_role.lambda_role.name]
 }
 
 # Create security group for Lambda function
 resource "aws_security_group" "lambda_sg" {
-  name_prefix = "${var.lambda_name}-${var.env}-"
+  name_prefix = "${var.lambda_name}-${terraform.workspace}-"
   vpc_id      = aws_vpc.vpc2.id
 
   # Define inbound and outbound rules here
@@ -107,7 +129,7 @@ resource "aws_ses_configuration_set" "email_config_set" {
 
 # Create EventBridge rule and target
 resource "aws_cloudwatch_event_rule" "event_rule" {
-  name        = "FileTransferEventRule-${var.env}"
+  name        = "FileTransferEventRule-${terraform.workspace}"
   description = "Rule for triggering Lambda on file transfer"
 
   event_pattern = jsonencode({
@@ -125,3 +147,31 @@ resource "aws_cloudwatch_event_target" "event_target" {
   target_id = "FileTransferTarget"
   arn       = aws_lambda_function.transfer_lambda.arn
 }
+
+#SQS deadletter queue creation 
+resource "aws_sqs_queue" "deadletter_queue" {
+  name = "landing-zone-deadletter-queue-${terraform.workspace}"
+ 
+  tags = {
+    Name        = "landing-zone-deadletter-queue-${terraform.workspace}"
+    Environment = terraform.workspace
+  }
+}
+
+#SQS queue creation
+resource "aws_sqs_queue" "terraform_queue" {
+  name                      = "landing-zone-queue-${terraform.workspace}"
+ 
+  #optional setting 
+  redrive_policy = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.deadletter_queue.arn
+    maxReceiveCount     = 5
+  })
+
+  tags = {
+    Name        = "landing-zone-queue-${terraform.workspace}"
+    Environment = terraform.workspace
+  }
+}
+
+
