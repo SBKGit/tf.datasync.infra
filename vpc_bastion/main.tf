@@ -31,7 +31,7 @@ resource "aws_vpc" "vpc1" {
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc1.id
   tags = {
-    Name        = "igw_${terraform.workspace}"
+    Name        = "igw_vpc1_${terraform.workspace}"
     Environment = terraform.workspace
   }
 }
@@ -40,7 +40,7 @@ resource "aws_internet_gateway" "igw" {
 resource "aws_eip" "nat_gateway_eip" {
 
   tags = {
-    Name        = "Nat Gateway ${terraform.workspace}"
+    Name        = "Nat Gateway vpc1 ${terraform.workspace}"
     Environment = terraform.workspace
   }
 }
@@ -67,7 +67,7 @@ resource "aws_route_table" "route_table_igw" {
 
   }
   tags = {
-    Name        = "igw_${terraform.workspace}"
+    Name        = "igw_vpc1_${terraform.workspace}"
     Environment = terraform.workspace
   }
 
@@ -88,7 +88,7 @@ resource "aws_route_table" "route_table_nat" {
 
   }
   tags = {
-    Name        = "nat_gateway_${terraform.workspace}"
+    Name        = "nat_gateway_vpc1_${terraform.workspace}"
     Environment = terraform.workspace
   }
 

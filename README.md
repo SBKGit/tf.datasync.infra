@@ -39,11 +39,11 @@ terraform workspace select <env name>
 ```
 - terraform plan to check what are we going to deploy
 ```sh
-terraform plan -var-file=<env name>.tfvars  
+terraform plan  
 ```
 - Apply changes to aws account.
 ```sh
-terraform apply -var-file=<env name>.tfvars  
+terraform apply 
 ```
 - Terraform will prompt for approval type Yes
 

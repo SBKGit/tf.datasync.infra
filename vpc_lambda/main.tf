@@ -7,14 +7,23 @@ resource "aws_vpc" "vpc2" {
   }
 }
 
+#create internet gateway for bastion access
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.vpc2.id
+  tags = {
+    Name        = "igw_vpc2_${terraform.workspace}"
+    Environment = terraform.workspace
+  }
+}
+
 # Create a public subnet in VPC2
-resource "aws_subnet" "public_subnet_vpc2" {
+resource "aws_subnet" "public_subnet_vpc" {
   vpc_id     = aws_vpc.vpc2.id
   cidr_block = var.public_subnet_cidr
   # availability_zone = var.public_subnet_availability_zone
   map_public_ip_on_launch = true
   tags = {
-    Name        = "Public Subnet VPC2"
+    Name        = "Public Subnet VPC2 ${terraform.workspace}"
     Environment = terraform.workspace
   }
 }
@@ -123,8 +132,13 @@ resource "aws_security_group" "lambda_sg" {
 }
 
 # Create SES configuration for sending emails
-resource "aws_ses_configuration_set" "email_config_set" {
+/* resource "aws_ses_configuration_set" "email_config_set" {
   name = "${var.lambda_name}_EmailConfigSet"
+} */
+
+# Create SES configuration for sending emails
+resource "aws_ses_email_identity" "example" {
+  email = var.email_id
 }
 
 # Create EventBridge rule and target
@@ -173,5 +187,3 @@ resource "aws_sqs_queue" "terraform_queue" {
     Environment = terraform.workspace
   }
 }
-
-

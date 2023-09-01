@@ -32,3 +32,7 @@ variable "public_subnet_availability_zone" {
   type        = list(string)
   description = "please provide availability zone "
 }
+
+variable "email_id" {
+  default = "example@gmail.com"
+}
