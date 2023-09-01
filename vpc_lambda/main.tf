@@ -21,7 +21,7 @@ resource "aws_subnet" "public_subnet_vpc2" {
 
 # Create an S3 bucket in VPC2 for landing zone
 resource "aws_s3_bucket" "landing_zone_bucket_1" {
-  bucket = "landing-zone-bucket-1-${terraform.workspace}" # Replace with your bucket name
+  bucket = "landing-zone-buckettt-1-${terraform.workspace}" # Replace with your bucket name
   acl    = "private"
 
   tags = {
@@ -32,7 +32,7 @@ resource "aws_s3_bucket" "landing_zone_bucket_1" {
 
 # Create an S3 bucket in VPC2 for landing zone
 resource "aws_s3_bucket" "landing_zone_bucket_2" {
-  bucket = "landing-zone-bucket-2-${terraform.workspace}" # Replace with your bucket name
+  bucket = "landing-zone-buckettt-2-${terraform.workspace}" # Replace with your bucket name
   acl    = "private"
 
   tags = {
@@ -43,7 +43,7 @@ resource "aws_s3_bucket" "landing_zone_bucket_2" {
 
 # Create an S3 bucket in VPC2 for landing zone
 resource "aws_s3_bucket" "landing_zone_bucket_3" {
-  bucket = "landing-zone-bucket-3-${terraform.workspace}" # Replace with your bucket name
+  bucket = "landing-zone-buckettt-3-${terraform.workspace}" # Replace with your bucket name
   acl    = "private"
 
   tags = {

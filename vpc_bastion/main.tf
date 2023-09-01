@@ -36,8 +36,24 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-#define traffic to route table
-resource "aws_route_table" "route_table" {
+#create elastic IP/Public IP for NAT Gateway
+resource "aws_eip" "nat_gateway_eip" {
+
+  tags = {
+    Name        = "Nat Gateway ${terraform.workspace}"
+    Environment = terraform.workspace
+  }
+}
+
+#create nat gateway for private subnet 
+resource "aws_nat_gateway" "nat_gateway" {
+  allocation_id = aws_eip.nat_gateway_eip.id
+  subnet_id = aws_subnet.public_subnet_vpc1.id
+  depends_on = [aws_eip.nat_gateway_eip]
+}
+
+#define traffic to route table with IGW
+resource "aws_route_table" "route_table_igw" {
   vpc_id = aws_vpc.vpc1.id
 
   route {
@@ -52,6 +68,27 @@ resource "aws_route_table" "route_table" {
   }
   tags = {
     Name        = "igw_${terraform.workspace}"
+    Environment = terraform.workspace
+  }
+
+}
+
+#define traffic to route table for nat gateway
+resource "aws_route_table" "route_table_nat" {
+  vpc_id = aws_vpc.vpc1.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_nat_gateway.nat_gateway.id
+  }
+
+  route {
+    cidr_block = var.vpc_cidr
+    gateway_id = "local"
+
+  }
+  tags = {
+    Name        = "nat_gateway_${terraform.workspace}"
     Environment = terraform.workspace
   }
 
@@ -72,16 +109,16 @@ resource "aws_subnet" "private_subnet_vpc1" {
 #subnet association with route table
 resource "aws_route_table_association" "public_subnet" {
   subnet_id      = aws_subnet.public_subnet_vpc1.id
-  route_table_id = aws_route_table.route_table.id
+  route_table_id = aws_route_table.route_table_igw.id
 }
 
 #subnet association with route table
 resource "aws_route_table_association" "private_subnet" {
   subnet_id      = aws_subnet.private_subnet_vpc1.id
-  route_table_id = aws_route_table.route_table.id
+  route_table_id = aws_route_table.route_table_nat.id
 }
 
-# Create a private subnet in VPC1
+# Create a public subnet in VPC1
 resource "aws_subnet" "public_subnet_vpc1" {
   vpc_id     = aws_vpc.vpc1.id
   cidr_block = var.public_subnet_cidr

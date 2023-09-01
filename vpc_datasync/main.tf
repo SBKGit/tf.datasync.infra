@@ -6,6 +6,20 @@ locals {
   }
 }
 
+data "aws_ami" "datasync_ami" {
+  most_recent = true
+
+  filter {
+    name   = "owner-alias"
+    values = ["amazon"]
+  }
+
+  filter {
+    name   = "name"
+    values = ["aws-datasync-*"]
+  }
+}
+
 # Create IAM role for DataSync agent in VPC1
 resource "aws_iam_role" "datasync_instance_role" {
   name = "DataSyncInstanceRole_${terraform.workspace}"
@@ -62,7 +76,7 @@ resource "aws_security_group" "datasync_security_group" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [var.vpc_cidr]
+    cidr_blocks = [var.egress_cidr]
 
   }
 
@@ -74,7 +88,7 @@ resource "aws_security_group" "datasync_security_group" {
 
 # Create EC2 instance for DataSync agent in VPC1
 resource "aws_instance" "datasync_instance" {
-  ami                    = var.ami_version
+  ami                    = data.aws_ami.datasync_ami.id
   instance_type          = local.instance_types[terraform.workspace]
   subnet_id              = data.terraform_remote_state.vpc_1.outputs.private_subnet
   vpc_security_group_ids = [aws_security_group.datasync_security_group.id]

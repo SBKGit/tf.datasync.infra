@@ -16,6 +16,11 @@ variable "private_subnet_cidr" {
   description = "This block is for private subnet CIDR block"
 }
 
+variable "egress_cidr" {
+  default     = ["0.0.0.0/0"]
+  description = "please provide valid CIDR block in IPV4"
+}
+
 variable "private_subnet_availability_zone" {
   default     = ["eu-west-2a", "eu-west-2b"] # Replace with your desired AZ
   description = "please provide availability zone "
