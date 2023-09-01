@@ -124,7 +124,7 @@ resource "aws_security_group" "datasync_agent_security_group" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [var.vpc_cidr]
+    cidr_blocks = var.egress_cidr
 
   }
 }
