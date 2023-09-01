@@ -70,7 +70,7 @@ resource "aws_lambda_function" "transfer_lambda" {
   runtime          = "nodejs14.x"
   source_code_hash = filebase64sha256("lambda.zip")
   vpc_config {
-    subnet_ids         = [aws_subnet.public_subnet_vpc2.id]
+    subnet_ids         = [aws_subnet.public_subnet_vpc.id]
     security_group_ids = [aws_security_group.lambda_sg.id]
   }
   tags = {

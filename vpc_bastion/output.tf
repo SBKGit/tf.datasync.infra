@@ -16,23 +16,23 @@ output "aws_internet_gateway_id" {
 }
 output "igw_aws_account" {
   value       = aws_internet_gateway.igw.owner_id
-  description = "AWS Account id to which internet gateway is associated."
+ 
 }
 output "private_subnet" {
   value       = aws_subnet.private_subnet_vpc1.id
-  description = "AWS Account id to which internet gateway is associated."
+ 
 }
 
 output "private_subnet_arn" {
   value       = aws_subnet.private_subnet_vpc1.arn
-  description = "AWS Account id to which internet gateway is associated."
+ 
 }
 
 output "public_subnet" {
   value       = aws_subnet.public_subnet_vpc1.id
-  description = "AWS Account id to which internet gateway is associated."
+ 
 }
 output "public_subnet_arn" {
   value       = aws_subnet.public_subnet_vpc1.arn
-  description = "AWS Account id to which internet gateway is associated."
+ 
 }
