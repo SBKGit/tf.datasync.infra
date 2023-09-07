@@ -29,21 +29,13 @@ cd VPC_baston
 ```sh
 terraform init 
 ```
-- create workspace using terraform 
-```sh
-terraform workspace new <env name>
-```
-- select workspace 
-```sh
-terraform workspace select <env name>
-```
 - terraform plan to check what are we going to deploy
 ```sh
-terraform plan  
+terraform plan --var-file=variables/<env>.fvars
 ```
 - Apply changes to aws account.
 ```sh
-terraform apply 
+terraform apply --var-file=variables/<env>.fvars
 ```
 - Terraform will prompt for approval type Yes
 
