@@ -8,18 +8,23 @@ variable "env" {
 
 }
 
+variable "aws_region" {
+  default = ""
+
+}
+
 variable "billing_mode" {
   default     = "PAY_PER_REQUEST"
   description = "You can also use PROVISIONED or PAY_PER_REQUEST"
 }
 
 variable "read_capacity" {
-  default     = ""
+  default     = null
   description = "Number of read units for this table. If the billing_mode is PROVISIONED, this field is required."
 }
 
 variable "write_capacity" {
-  default     = ""
+  default     = null
   description = "Number of write units for this table. If the billing_mode is PROVISIONED, this field is required."
 
 }
