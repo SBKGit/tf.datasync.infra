@@ -1,10 +1,10 @@
 #create dynamoDB 
 resource "aws_dynamodb_table" "dynamoDB" {
-  name           = "${var.name}-dynamoDB"
-  billing_mode   = var.billing_mode # You can also use "PROVISIONED"
-  read_capacity  = var.read_capacity
-  write_capacity = var.write_capacity
-server_side_encryption = var.encryption
+  name                   = "${var.name}-dynamoDB"
+  billing_mode           = var.billing_mode # You can also use "PROVISIONED"
+  read_capacity          = var.read_capacity
+  write_capacity         = var.write_capacity
+  server_side_encryption = var.encryption
   attribute {
     name = "pk"
     type = "S" # String attribute
@@ -24,7 +24,7 @@ server_side_encryption = var.encryption
     attribute_name = "sk"
     key_type       = "RANGE"
   }
-    tags = {
+  tags = {
     Name        = "${var.name}-dynamoDB"
     Environment = var.env
   }
