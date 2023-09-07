@@ -138,3 +138,8 @@ variable "launch_version" {
   description = "Template version. Can be version number, $Latest, or $Default."
 
 }
+
+variable "iam_role" {
+  default = ""
+  
+}

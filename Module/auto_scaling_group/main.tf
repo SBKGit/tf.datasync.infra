@@ -5,7 +5,7 @@ resource "aws_launch_template" "launch_tmpl" {
   instance_type          = var.instance_type
   key_name               = var.key_name
   vpc_security_group_ids = var.securiy_group_id
-  iam_instance_profile   = var.instance_profile #need to add in main.tf with instance profile
+  iam_instance_profile   = aws_iam_instance_profile.instance_profile.name
   user_data              = filebase64("${path.module}/example.sh")
   block_device_mappings {
 
@@ -20,6 +20,13 @@ resource "aws_launch_template" "launch_tmpl" {
     }
   }
 }
+
+#Attach IAM role with EC2 machine
+resource "aws_iam_instance_profile" "instance_profile" {
+  name = "${var.name}-instance-profile"
+  role = var.iam_role
+}
+
 
 #create auto scaling group
 resource "aws_autoscaling_group" "asg" {

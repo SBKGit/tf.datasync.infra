@@ -21,3 +21,4 @@ output "launch_tmpl_arn" {
   value       = aws_launch_template.launch_tmpl.arn
   description = "output will display arn of launch templete created"
 }
+
