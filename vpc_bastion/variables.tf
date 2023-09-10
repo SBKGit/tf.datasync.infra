@@ -1,6 +1,12 @@
 variable "aws_region" {
   default = "eu-west-2" #please updated in environment.tfvars for change.
 }
+
+variable "app_name" {
+  default = ""
+
+}
+
 variable "vpc_cidr" {
   default     = "10.0.0.0/16"
   description = "This is for VPC Datasync VPC CIDR IP range"
@@ -41,3 +47,12 @@ variable "ingress_cidr" {
   description = "please provide valid CIDR block in IPV4"
 }
 
+variable "key_name" {
+  default = "Ec2_keypair"
+
+}
+
+variable "role_path" {
+  default = "/app/"
+
+}

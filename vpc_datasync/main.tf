@@ -1,8 +1,6 @@
-locals {
-  instance_types = {
-    dev  = "m5.2xlarge"
-    uat  = "m5.2xlarge"
-    prod = "m5.2xlarge"
+#backend configuration
+terraform {
+  backend "s3" {
   }
 }
 
@@ -22,8 +20,8 @@ data "aws_ami" "datasync_ami" {
 
 # Create IAM role for DataSync agent in VPC1
 resource "aws_iam_role" "datasync_instance_role" {
-  name = "DataSyncInstanceRole_${terraform.workspace}"
-  path = "/app/"
+  name = "${var.app_name}_${var.env}_iam_role"
+  path = var.role_path
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -40,27 +38,27 @@ resource "aws_iam_role" "datasync_instance_role" {
 
 # Attach policies to the DataSync agent role
 resource "aws_iam_policy_attachment" "datasync_Instance_policy_attachment" {
-  name       = "datasync-Instance-${terraform.workspace}"
+  name       = "${var.app_name}_${var.env}"
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess" # Replace with appropriate policy ARN
   roles      = [aws_iam_role.datasync_instance_role.name]
 }
 
 # Attach policies to the DataSync agent role SSM policy
 resource "aws_iam_policy_attachment" "datasync_ssm_policy_attachment" {
-  name       = "datasync-Instance-ssm-${terraform.workspace}"
+  name       = "${var.app_name}-${var.env}-ssm"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM" # Replace with appropriate policy ARN
   roles      = [aws_iam_role.datasync_instance_role.name]
 }
 
 #Attach IAM role to EC2 Machine
 resource "aws_iam_instance_profile" "datasync_profile" {
-  name = "DatasyncAgent_${terraform.workspace}"
+  name = "${var.app_name}_${var.env}_instance_profile"
   role = aws_iam_role.datasync_instance_role.name
 }
 
 #create security group to allow traffic
 resource "aws_security_group" "datasync_security_group" {
-  name        = "datasync_security_group_${terraform.workspace}"
+  name        = "${var.app_name}_${var.env}_security_group"
   description = "Allow TLS inbound traffic"
   vpc_id      = data.terraform_remote_state.vpc_1.outputs.vpc_id
 
@@ -81,19 +79,19 @@ resource "aws_security_group" "datasync_security_group" {
   }
 
   tags = {
-    Name        = "Datasync security group ${terraform.workspace}"
-    Environment = terraform.workspace
+    Name        = "Datasync security group ${var.env}"
+    Environment = var.env
   }
 }
 
 # Create EC2 instance for DataSync agent in VPC1
 resource "aws_instance" "datasync_instance" {
   ami                    = data.aws_ami.datasync_ami.id
-  instance_type          = local.instance_types[terraform.workspace]
+  instance_type          = var.instance_type
   subnet_id              = data.terraform_remote_state.vpc_1.outputs.private_subnet
   vpc_security_group_ids = [aws_security_group.datasync_security_group.id]
   iam_instance_profile   = aws_iam_instance_profile.datasync_profile.name
-  key_name               = "Ec2_keypair"
+  key_name               = var.key_pair
   user_data              = <<-EOF
               #!/bin/bash
               yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
@@ -101,14 +99,14 @@ resource "aws_instance" "datasync_instance" {
               systemctl enable amazon-ssm-agent
               EOF
   tags = {
-    Name        = "DataSync Instance"
-    Environment = terraform.workspace
+    Name        = "DataSync Instance ${var.env}"
+    Environment = var.env
   }
 }
 
 #create security group to allow traffic
 resource "aws_security_group" "datasync_agent_security_group" {
-  name        = "datasync_agent_security_group_${terraform.workspace}"
+  name        = "${var.app_name}_agent_${var.env}_security_group"
   description = "Allow TLS inbound traffic"
   vpc_id      = data.terraform_remote_state.vpc_1.outputs.vpc_id
 
@@ -144,7 +142,7 @@ resource "aws_datasync_agent" "datasync_agent" {
   subnet_arns           = [data.terraform_remote_state.vpc_1.outputs.private_subnet_arn]
   vpc_endpoint_id       = aws_vpc_endpoint.datasync_agent_endpoint.id
   private_link_endpoint = data.aws_network_interface.datasync_agent_interface.private_ip
-  name                  = "datasync_agent_${terraform.workspace}"
+  name                  = "${var.app_name}_agent_${var.env}"
 }
 
 

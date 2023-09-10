@@ -6,6 +6,11 @@ variable "vpc_cidr" {
   description = "This is for VPC Datasync VPC CIDR IP range"
 }
 
+variable "app_name" {
+  default = ""
+
+}
+
 variable "env" {
   default     = ""
   description = "this is mandatory field which need to be given environment.tf file e.g., dev.tfvars"
@@ -50,4 +55,14 @@ variable "datasync_task_options" {
     mtime                  = "NONE"
     bytes_per_second       = "-1"
   }
+}
+
+variable "role_path" {
+  default = "/app/"
+  
+}
+
+variable "key_name" {
+  default = "Ec2_keypair"
+  
 }

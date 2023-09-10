@@ -1,9 +1,15 @@
+#backend configuration
+terraform {
+  backend "s3" {
+  }
+}
+
 # Create VPC2 (dev)
 resource "aws_vpc" "vpc2" {
   cidr_block = var.vpc_cidr
   tags = {
-    Name        = "VPC2_${terraform.workspace}"
-    Environment = terraform.workspace
+    Name        = "VPC2_${var.env}"
+    Environment = var.env
   }
 }
 
@@ -11,8 +17,8 @@ resource "aws_vpc" "vpc2" {
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc2.id
   tags = {
-    Name        = "igw_vpc2_${terraform.workspace}"
-    Environment = terraform.workspace
+    Name        = "igw_vpc2_${var.env}"
+    Environment = var.env
   }
 }
 
@@ -23,65 +29,65 @@ resource "aws_subnet" "public_subnet_vpc" {
   # availability_zone = var.public_subnet_availability_zone
   map_public_ip_on_launch = true
   tags = {
-    Name        = "Public Subnet VPC2 ${terraform.workspace}"
-    Environment = terraform.workspace
+    Name        = "Public Subnet VPC2 ${var.env}"
+    Environment = var.env
   }
 }
 
 # Create an S3 bucket in VPC2 for landing zone
 resource "aws_s3_bucket" "landing_zone_bucket_1" {
-  bucket = "landing-zone-buckettt-1-${terraform.workspace}" # Replace with your bucket name
+  bucket = "${var.bucket_name}-${var.env}-bucket-1" # Replace with your bucket name
   acl    = "private"
 
   tags = {
     Name        = "Landing Zone Bucket 1"
-    Environment = terraform.workspace
+    Environment = var.env
   }
 }
 
 # Create an S3 bucket in VPC2 for landing zone
 resource "aws_s3_bucket" "landing_zone_bucket_2" {
-  bucket = "landing-zone-buckettt-2-${terraform.workspace}" # Replace with your bucket name
+  bucket = "${var.bucket_name}-${var.env}-bucket-2" # Replace with your bucket name
   acl    = "private"
 
   tags = {
     Name        = "Landing Zone Bucket 2"
-    Environment = terraform.workspace
+    Environment = var.env
   }
 }
 
 # Create an S3 bucket in VPC2 for landing zone
 resource "aws_s3_bucket" "landing_zone_bucket_3" {
-  bucket = "landing-zone-buckettt-3-${terraform.workspace}" # Replace with your bucket name
+  bucket = "${var.bucket_name}-${var.env}-bucket-3" # Replace with your bucket name
   acl    = "private"
 
   tags = {
     Name        = "Landing Zone Bucket 3"
-    Environment = terraform.workspace
+    Environment = var.env
   }
 }
 
 # Create a Lambda function in VPC2
 resource "aws_lambda_function" "transfer_lambda" {
   filename         = "lambda.zip" # Replace with your Lambda function code
-  function_name    = "${var.lambda_name}-${terraform.workspace}"
+  function_name    = "${var.lambda_name}-${var.env}"
   role             = aws_iam_role.lambda_role.arn
-  handler          = "index.handler"
-  runtime          = "nodejs14.x"
+  handler          = "${var.lambda_name}-${var.env}.handler"
+  runtime          = var.runtime
   source_code_hash = filebase64sha256("lambda.zip")
   vpc_config {
     subnet_ids         = [aws_subnet.public_subnet_vpc.id]
     security_group_ids = [aws_security_group.lambda_sg.id]
   }
   tags = {
-    Name        = "${var.lambda_name} ${terraform.workspace}"
-    Environment = terraform.workspace
+    Name        = "${var.lambda_name} ${var.env}"
+    Environment = var.env
   }
 }
 
 # Configure IAM role for Lambda function
 resource "aws_iam_role" "lambda_role" {
-  name = "${var.lambda_name}_${terraform.workspace}"
+  name = "${var.lambda_name}_${var.env}_iam_role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -95,7 +101,7 @@ resource "aws_iam_role" "lambda_role" {
 }
 
 resource "aws_iam_policy" "lambda_policy" {
-  name   = "${var.lambda_name}_${terraform.workspace}"
+  name   = "${var.lambda_name}_${var.env}_policy"
   policy = <<EOT
 {
     "Version": "2012-10-17",
@@ -118,14 +124,14 @@ EOT
 }
 
 resource "aws_iam_policy_attachment" "datasync_agent_policy_attachment" {
-  name       = "${var.lambda_name}_${terraform.workspace}"
+  name       = "${var.lambda_name}_${var.env}"
   policy_arn = aws_iam_policy.lambda_policy.arn # Replace with appropriate policy ARN
   roles      = [aws_iam_role.lambda_role.name]
 }
 
 # Create security group for Lambda function
 resource "aws_security_group" "lambda_sg" {
-  name_prefix = "${var.lambda_name}-${terraform.workspace}-"
+  name_prefix = "${var.lambda_name}-${var.env}-lambda_sg"
   vpc_id      = aws_vpc.vpc2.id
 
   # Define inbound and outbound rules here
@@ -138,12 +144,13 @@ resource "aws_security_group" "lambda_sg" {
 
 # Create SES configuration for sending emails
 resource "aws_ses_email_identity" "example" {
-  email = var.email_id
+  count = length(var.email_id)
+  email = var.email_id[count.index]
 }
 
 # Create EventBridge rule and target
 resource "aws_cloudwatch_event_rule" "event_rule" {
-  name        = "FileTransferEventRule-${terraform.workspace}"
+  name        = "FileTransferEventRule-${var.env}"
   description = "Rule for triggering Lambda on file transfer"
 
   event_pattern = jsonencode({
@@ -158,23 +165,23 @@ resource "aws_cloudwatch_event_rule" "event_rule" {
 
 resource "aws_cloudwatch_event_target" "event_target" {
   rule      = aws_cloudwatch_event_rule.event_rule.name
-  target_id = "FileTransferTarget"
+  target_id = "${var.lambda_name}-${var.env}-event-rule"
   arn       = aws_lambda_function.transfer_lambda.arn
 }
 
 #SQS deadletter queue creation 
 resource "aws_sqs_queue" "deadletter_queue" {
-  name = "landing-zone-deadletter-queue-${terraform.workspace}"
+  name = "landing-zone-deadletter-queue-${var.env}"
 
   tags = {
-    Name        = "landing-zone-deadletter-queue-${terraform.workspace}"
-    Environment = terraform.workspace
+    Name        = "landing-zone-deadletter-queue-${var.env}"
+    Environment = var.env
   }
 }
 
 #SQS queue creation
 resource "aws_sqs_queue" "terraform_queue" {
-  name = "landing-zone-queue-${terraform.workspace}"
+  name = "landing-zone-queue-${var.env}"
 
   #optional setting 
   redrive_policy = jsonencode({
@@ -183,7 +190,7 @@ resource "aws_sqs_queue" "terraform_queue" {
   })
 
   tags = {
-    Name        = "landing-zone-queue-${terraform.workspace}"
-    Environment = terraform.workspace
+    Name        = "landing-zone-queue-${var.env}"
+    Environment = var.env
   }
 }

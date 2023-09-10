@@ -15,24 +15,24 @@ output "aws_internet_gateway_id" {
   description = "Internet gateway id."
 }
 output "igw_aws_account" {
-  value       = aws_internet_gateway.igw.owner_id
- 
+  value = aws_internet_gateway.igw.owner_id
+
 }
 output "private_subnet" {
-  value       = aws_subnet.private_subnet_vpc1.id
- 
+  value = aws_subnet.private_subnet_vpc1.id
+
 }
 
 output "private_subnet_arn" {
-  value       = aws_subnet.private_subnet_vpc1.arn
- 
+  value = aws_subnet.private_subnet_vpc1.arn
+
 }
 
 output "public_subnet" {
-  value       = aws_subnet.public_subnet_vpc1.id
- 
+  value = aws_subnet.public_subnet_vpc1.id
+
 }
 output "public_subnet_arn" {
-  value       = aws_subnet.public_subnet_vpc1.arn
- 
+  value = aws_subnet.public_subnet_vpc1.arn
+
 }

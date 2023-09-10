@@ -8,9 +8,10 @@ variable "lambda_name" {
 }
 
 variable "bucket_name" {
-  default     = "landing-zone-bucket-name"
-  description = "devdatasync"
+  default     = "Landing-zone"
+  description = "please provide valid lambda name"
 }
+
 
 variable "vpc_cidr" {
   default     = "10.1.0.0/16"
@@ -34,5 +35,10 @@ variable "public_subnet_availability_zone" {
 }
 
 variable "email_id" {
-  default = "example@gmail.com"
+  default = ["example@gmail.com","example2@gmail.com"]
+}
+
+variable "runtime" {
+  default = "nodejs14.x"
+  
 }
