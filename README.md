@@ -27,7 +27,7 @@ cd VPC_baston
 ```
 - Initialize terraform 
 ```sh
-terraform init 
+terraform init -backend-config="<env>/backend.tfvars"
 ```
 - terraform plan to check what are we going to deploy
 ```sh

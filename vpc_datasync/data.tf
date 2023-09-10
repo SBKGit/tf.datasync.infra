@@ -3,7 +3,7 @@ data "terraform_remote_state" "vpc_1" {
   backend = "s3"
   config = {
     bucket = "terraform-state-datatf" #updated with bucket name
-    key    = "env://${terraform.workspace}/vpc_bastion/vpc_bastion.tfstate"
+    key    = "${var.env}/vpc_bastion/vpc_bastion.tfstate"
     region = var.aws_region
   }
 }

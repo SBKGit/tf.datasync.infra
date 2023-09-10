@@ -1,3 +1,10 @@
+#backend configuration
+terraform {
+  backend "s3" {
+  }
+}
+
+
 module "dynamoDB" {
   source       = "../module/dynamoDB"
   name         = "${var.app_name}-${var.env}"
