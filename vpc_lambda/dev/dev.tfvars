@@ -1,0 +1,5 @@
+app_name = "datasync"
+env = "dev"
+aws_region = "eu-west-2"
+lambda_name = "DataTransfer"
+bucket_name = "Landing-zone"

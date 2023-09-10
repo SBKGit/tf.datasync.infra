@@ -12,29 +12,36 @@ This project helps to deploy datasync task and datasync agent creation using ter
 
 ### How to deploy
 
+NOTE :- Deploy in same order as listed
+
+1. Deploy VPC_baston
+2. Deploy VPC_Datasync  
+3. Deploy VPC_Lambda
 - configure awscli with access key and secret key
 ```sh
 aws configure 
 ```
-- cd to root folder eg., VPC_Datasync
-- run following command to copy backend.tf to root folder
+- Navigate to VPC_baston to deploy baston server and VPC1
 ```sh
-cp  <env name>/backend.tf .  
+cd VPC_baston
 ```
 - Initialize terraform 
 ```sh
-terraform init 
+terraform init -backend-config="<env>/backend.tfvars"
 ```
 - terraform plan to check what are we going to deploy
 ```sh
-terraform plan -var-file=<env name>.tfvars  
+terraform plan --var-file=<dev>/<env>.tfvars
 ```
 - Apply changes to aws account.
 ```sh
-terraform apply -var-file=<env name>.tfvars  
+terraform apply --var-file=<env>/<env>.tfvars
 ```
 - Terraform will prompt for approval type Yes
 
+- repeat the same for other 2 folders 
+
+### NOTE :- Please deploy in same order as listed
 
 
 

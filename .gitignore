@@ -1,0 +1,23 @@
+# Ignore VSCode settings and workspace files
+.vscode/
+
+# Ignore Terraform state files and directories
+**/*.tfstate
+**/*.tfstate.*.backup
+**/*.tfstate.backup
+**/*.tfplan
+**/.terraform/
+
+# Ignore local development files
+terraform.tfvars
+.terraform.lock.hcl
+
+# Ignore log files
+*.log
+
+# Ignore system and temporary files
+.DS_Store
+Thumbs.db
+
+# Ignore sensitive or environment-specific files
+secrets.json

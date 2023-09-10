@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+    
+    parameters {
+
+        string(name:'repo_path', description: 'Please provide repo')
+        string(name :'subdir_name', description: 'Please provide subdir')        
+        choice(name: 'env_name', choices: ['dev', 'uat', 'ppe'], description: 'please select env')
+        booleanParam(name: 'skip_auto_approval', defaultValue: false, description: 'skip approval to get approval')
+
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout your source code repository with a specific subfolder
+                def subdir_name = params.subdir_name
+                checkout([$class: 'GitSCM', 
+                          branches: [[name: '*/main_workspace']], 
+                          userRemoteConfigs: [[url: 'https://github.com/SBKGit/tf.datasync.infra.git']], 
+                          extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: ${subdir_name} ]]
+                ])
+            }
+        }
+
+        stage('Deploy Infrastructure') {
+            steps {
+                script {
+                    if (params.skip_auto_approval == true ) {
+                        def terraformCmd = "terraform"
+                        def environment = params.env_name
+                        def env_file = "${environment}.tfvars"
+                        sh "pwd"
+                        sh "ls -lrt"
+                        sh "${terraformCmd} init"
+                        sh "${terraformCmd} plan -var-file=${env_file}"
+                        sh "${terraformCmd} apply -auto-approve -var-file=${env_file}"
+                    }
+                    else {
+                        def terraformCmd = "terraform"
+                        def environment = params.env_name
+                        def env_file = "${environment}.tfvars"
+                        sh "pwd"
+                        sh "ls -lrt"
+                        sh "${terraformCmd} init"
+                        sh "${terraformCmd} plan -var-file=${env_file}"
+                        sh "${terraformCmd} apply -var-file=${env_file}"
+                    }
+                }
+            }
+        }
+    }
+}

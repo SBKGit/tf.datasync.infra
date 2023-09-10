@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout your source code repository with a specific subfolder
+                checkout([$class: 'GitSCM', 
+                          branches: [[name: '*/main_workspace']], 
+                          userRemoteConfigs: [[url: 'https://github.com:SBKGit/tf.datasync.infra.git']], 
+                          extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'Manifest/']]
+            }
+        }
+
+        stage('Read Manifest') {
+            steps {
+                script {
+                    def manifestFile = readFile('terraform_deploy.yaml')
+                    def manifest = readYaml(text: manifestFile)
+
+                    // Extract information from the manifest
+                    def appName = manifest.appName
+                    def version = manifest.version
+                    def deployConfig = manifest.deployConfig
+
+                    echo "Deploying ${appName} version ${version}"
+
+                    // You can also access other information from the manifest as needed
+                    // def environment = manifest.environment
+                    // def ports = manifest.ports
+
+                    echo "Triggering Jenkins job for ${appName} version ${version}"
+                    build job: 'terraform_infra_creation' , parameters: [string(name: 'APP_NAME', value: appName), string(name: 'VERSION', value: version)]
+                }
+
+            }
+        }
+
+        }
+
+    }
