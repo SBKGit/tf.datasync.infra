@@ -31,11 +31,11 @@ terraform init -backend-config="<env>/backend.tfvars"
 ```
 - terraform plan to check what are we going to deploy
 ```sh
-terraform plan --var-file=variables/<env>.fvars
+terraform plan --var-file=variables/<env>.tfvars
 ```
 - Apply changes to aws account.
 ```sh
-terraform apply --var-file=variables/<env>.fvars
+terraform apply --var-file=variables/<env>.tfvars
 ```
 - Terraform will prompt for approval type Yes
 
