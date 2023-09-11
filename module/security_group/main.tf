@@ -1,3 +1,9 @@
+#backend configuration
+terraform {
+  backend "s3" {
+  }
+}
+
 #create security group 
 resource "aws_security_group" "security_group" {
   name_prefix = "${var.name}-sg"

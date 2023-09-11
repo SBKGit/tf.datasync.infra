@@ -1,3 +1,9 @@
+#backend configuration
+terraform {
+  backend "s3" {
+  }
+}
+
 #create dynamoDB 
 resource "aws_dynamodb_table" "dynamoDB" {
   name           = "${var.name}-dynamoDB"

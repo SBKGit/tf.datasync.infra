@@ -45,3 +45,8 @@ variable "vpc_id" {
 variable "name" {
   default = ""
 }
+
+variable "aws_region" {
+  default = ""
+
+}

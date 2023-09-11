@@ -1,3 +1,10 @@
+#backend configuration
+terraform {
+  backend "s3" {
+  }
+}
+
+#iam assume policy creation
 data "aws_iam_policy_document" "instance_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -9,7 +16,7 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
   }
 }
 
-#
+#create iam role service
 resource "aws_iam_role" "iam_role" {
   name                = "${var.name}-iam-role"
   path                = var.path_name
