@@ -1,9 +1,3 @@
-#backend configuration
-terraform {
-  backend "s3" {
-  }
-}
-
 
 module "dynamoDB" {
   source       = "../module/dynamoDB"
