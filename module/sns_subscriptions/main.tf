@@ -1,9 +1,3 @@
-#backend configuration
-terraform {
-  backend "s3" {
-  }
-}
-
 #create sns topic
 resource "aws_sns_topic_subscription" "sns_topic_subscription" {
   topic_arn = var.topic_arn

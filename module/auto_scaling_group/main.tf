@@ -1,9 +1,3 @@
-#backend configuration
-terraform {
-  backend "s3" {
-  }
-}
-
 #create launch templete for auto scaling group
 resource "aws_launch_template" "launch_tmpl" {
   name_prefix            = "${var.name}-launch-template"

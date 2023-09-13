@@ -1,9 +1,3 @@
-#backend configuration
-terraform {
-  backend "s3" {
-  }
-}
-
 #create SQS queue
 resource "aws_sqs_queue" "sqs_queue" {
   name                      = "${var.name}-${var.env}-queue"

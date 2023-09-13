@@ -21,3 +21,4 @@ Thumbs.db
 
 # Ignore sensitive or environment-specific files
 secrets.json
+*.zip
