@@ -12,10 +12,10 @@ module "app_flow" {
   destination_bucket_name = ""
   destination_bucket_prefix = ""
   destination_output_format = ""
-  dynamics_instance_url = ""
+  dynamics_instance_url = "https://myorg.southeastasia.dynamics.com/"
   client_id = ""
   client_secret = ""
-  organization_name = ""
-  profile_Source_connection_type = ""
+  organization_name = "myorg"
+  profile_Source_connection_type = "Salesforce"
   trigger_type = ""
 }

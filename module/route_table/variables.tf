@@ -2,7 +2,7 @@ variable "name" {
   default = ""
 }
 
-variable "subnet_cidr" {
+variable "env" {
   default = ""
   
 }
@@ -12,22 +12,11 @@ variable "vpc_id" {
   
 }
 
-variable "env" {
+variable "route" {
   default = ""
   
 }
 
 variable "aws_region" {
   default = ""
-  
-}
-
-variable "availability_zone" {
-  default = ""
-  
-}
-
-variable "map_public_ip_on_launch" {
-  default = null
-  
 }

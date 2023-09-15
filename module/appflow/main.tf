@@ -6,10 +6,10 @@ resource "aws_appflow_connector_profile" "connector_profile" {
 
 connector_profile_config {
   connector_profile_properties {
-  dynamics_365 {
+#  dynamics_365 {
     instance_url      = var.dynamics_instance_url # Replace with your Dynamics 365 instance URL
     organization_name = var.organization_name     # Replace with your organization name
-  }
+#  }
   }
 
   connector_profile_credentials  {

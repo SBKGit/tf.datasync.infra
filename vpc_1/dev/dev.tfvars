@@ -1,0 +1,6 @@
+vpc_name           = "vpc1"
+env                = "dev"
+aws_region         = "eu-west-2"
+vpc_cidr           = "10.0.0.0/16"
+private_cidr_block = "10.0.1.0/24"
+public_cidr_block  = "10.0.100.0/24"
