@@ -54,10 +54,10 @@ variable "destination_output_format" {
 
 variable "trigger_type" {
   default = ""
-  
+
 }
 
 variable "connection_mode" {
   default = "Private"
-  
+
 }

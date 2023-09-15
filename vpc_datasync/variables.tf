@@ -59,10 +59,10 @@ variable "datasync_task_options" {
 
 variable "role_path" {
   default = "/app/"
-  
+
 }
 
 variable "key_name" {
   default = "Ec2_keypair"
-  
+
 }

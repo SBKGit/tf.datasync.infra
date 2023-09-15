@@ -11,7 +11,7 @@ resource "aws_sqs_queue" "sqs_queue" {
   })
 
   tags = {
-    Name = var.name
+    Name        = var.name
     Environment = var.env
   }
 }

@@ -10,7 +10,7 @@ variable "aws_region" {
 
 variable "env" {
   default = ""
-  
+
 }
 variable "managed_arn" {
   default     = ""
@@ -29,5 +29,5 @@ variable "service_name" {
 
 variable "action_items" {
   default = ""
-  
+
 }

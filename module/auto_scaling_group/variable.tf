@@ -9,7 +9,7 @@ variable "env" {
 
 #variables for launch template
 variable "ami_id" {
-  default = ""
+  default     = ""
   description = "The AMI from which to launch the instance."
 }
 
@@ -24,49 +24,49 @@ variable "key_name" {
 }
 
 variable "securiy_group_id" {
-  default = ""
+  default     = ""
   description = "A list of security group IDs to associate with."
-  
+
 }
 
 variable "volume_device_name" {
-  default = "/dev/sdf"
+  default     = "/dev/sdf"
   description = "The name of the device to mount."
 }
 
 variable "volume_size" {
-  default = 8
+  default     = 8
   description = "The size of the volume in gigabytes."
-  
+
 }
 
 variable "volume_type" {
-  default = "gp3"
+  default     = "gp3"
   description = "The volume type. Can be one of standard, gp2, gp3, io1, io2, sc1 or st1."
-  
+
 }
 
 variable "ebs_deletion" {
-  default = true
+  default     = true
   description = "Whether the volume should be destroyed on instance termination"
-  
+
 }
 
 variable "through_put" {
-  default = ""
+  default     = ""
   description = "The throughput to provision for a gp3 volume in MiB/s (specified as an integer, e.g., 500), with a maximum of 1,000 MiB/s."
 }
 
 variable "ipos_value" {
-  default = ""
+  default     = ""
   description = "The amount of provisioned IOPS. This must be set with a volume_type of io1/io2/gp3."
-  
+
 }
 
 variable "enable_encryption" {
-  default = true
+  default     = true
   description = "Enables EBS encryption on the volume"
-  
+
 }
 
 #auto scaling group variables 
@@ -141,5 +141,5 @@ variable "launch_version" {
 
 variable "iam_role" {
   default = ""
-  
+
 }

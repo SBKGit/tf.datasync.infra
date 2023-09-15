@@ -3,7 +3,7 @@ resource "aws_security_group" "security_group" {
   name_prefix = "${var.name}-sg"
   vpc_id      = var.vpc_id
 
-#create ingress rules
+  #create ingress rules
   dynamic "ingress" {
     for_each = var.ingress_rules
     content {
@@ -14,8 +14,8 @@ resource "aws_security_group" "security_group" {
     }
   }
 
-#create ingress rules
-    dynamic "egress" {
+  #create ingress rules
+  dynamic "egress" {
     for_each = var.egress_rules
     content {
       from_port   = egress.value.from_port

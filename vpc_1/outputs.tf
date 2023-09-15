@@ -3,7 +3,7 @@ output "vpc_1_id" {
 }
 
 output "igw_1_id" {
-  value = module.igw_1.igw_id6
+  value = module.igw_1.igw_id
 
 }
 

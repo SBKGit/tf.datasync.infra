@@ -35,10 +35,10 @@ variable "public_subnet_availability_zone" {
 }
 
 variable "email_id" {
-  default = ["example@gmail.com","example2@gmail.com"]
+  default = ["example@gmail.com", "example2@gmail.com"]
 }
 
 variable "runtime" {
   default = "nodejs14.x"
-  
+
 }

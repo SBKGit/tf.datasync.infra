@@ -2,7 +2,7 @@
 resource "aws_eip" "nat_gateway_eip" {
 
   tags = {
-    Name        = "Nat Gateway eip ${var.name} ${var.env}"
+    Name        = "nat gateway eip ${var.name} ${var.env}"
     Environment = var.env
   }
 }
@@ -13,7 +13,7 @@ resource "aws_nat_gateway" "nat_gateway" {
   subnet_id     = var.subnet_id
   depends_on    = [aws_eip.nat_gateway_eip]
   tags = {
-    Name        = "Nat Gateway ${var.name} ${var.env}"
+    Name        = "nat gateway ${var.name} ${var.env}"
     Environment = var.env
   }
 

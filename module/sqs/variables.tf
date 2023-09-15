@@ -4,43 +4,43 @@ variable "aws_region" {
 }
 
 variable "name" {
-    default = ""
-  
+  default = ""
+
 }
 
 variable "env" {
-    default = ""
-  
+  default = ""
+
 }
 
 variable "delay_seconds" {
-    default = number
-    description = "please provide seconds number only"
-  
+  default     = number
+  description = "please provide seconds number only"
+
 }
 
 variable "message_size" {
-    default = number
-    description = "please provide in numbers"
+  default     = number
+  description = "please provide in numbers"
 }
 
 variable "retention_seconds" {
-    default = number
-    description = "please provide retention in seconds"
-  
+  default     = number
+  description = "please provide retention in seconds"
+
 }
 
 variable "receive_wait_time" {
-    default = number
-  
+  default = number
+
 }
 
 variable "deadletter_sqs_arn" {
-    default = null
-  
+  default = null
+
 }
 
 variable "deadletter_receive_count" {
-    default = null
-  
+  default = null
+
 }

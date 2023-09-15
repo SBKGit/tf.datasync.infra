@@ -14,5 +14,5 @@ output "sns_pending_confirmation" {
 
 output "confirmation_authenticated" {
   value = aws_sns_topic_subscription.sns_topic_subscription.confirmation_was_authenticated
-  
+
 }

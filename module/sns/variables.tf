@@ -4,11 +4,11 @@ variable "aws_region" {
 }
 
 variable "name" {
-    default = ""
-  
+  default = ""
+
 }
 
 variable "env" {
-    default = ""
-  
+  default = ""
+
 }

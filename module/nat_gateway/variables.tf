@@ -4,15 +4,15 @@ variable "name" {
 
 variable "env" {
   default = ""
-  
+
 }
 
 variable "subnet_id" {
-  default = ""
-  
+  default = [""]
+
 }
 
 variable "aws_region" {
   default = ""
-  
+
 }
