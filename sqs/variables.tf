@@ -3,7 +3,7 @@ variable "aws_region" {
 
 }
 
-variable "name" {
+variable "app_name" {
   default = ""
 
 }
@@ -30,12 +30,12 @@ variable "retention_seconds" {
 
 }
 
+variable "receive_wait_time" {
+  default = null
+
+}
+
 # variable "retention_wait_time" {
 #   default = null
 
 # }
-
-variable "receive_wait_time" {
-  default = null
-}
-
