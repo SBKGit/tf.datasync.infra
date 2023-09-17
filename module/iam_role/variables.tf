@@ -28,6 +28,6 @@ variable "service_name" {
 }
 
 variable "action_items" {
-  default = ""
+  default = "iam:GetUser"
 
 }

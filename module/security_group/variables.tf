@@ -4,16 +4,8 @@ variable "ingress_rules" {
     to_port         = number
     protocol        = string
     cidr_blocks     = list(string)
-    security_groups = string
-    },
-    {
-      from_port       = number
-      to_port         = number
-      protocol        = string
-      cidr_blocks     = list(string)
-      security_groups = string
+    #security_groups = list(string)
     }
-
   ))
   description = "Map of ingress rules"
 }
@@ -24,17 +16,8 @@ variable "egress_rules" {
     to_port         = number
     protocol        = string
     cidr_blocks     = list(string)
-    security_groups = string
-    },
-    {
-      from_port       = number
-      to_port         = number
-      protocol        = string
-      cidr_blocks     = list(string)
-      security_groups = string
-    }
-
-  ))
+    #security_groups = list(string)
+  }))
   description = "Map of ingress rules"
 }
 
@@ -47,6 +30,11 @@ variable "name" {
 }
 
 variable "aws_region" {
+  default = ""
+
+}
+
+variable "env" {
   default = ""
 
 }

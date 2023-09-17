@@ -53,12 +53,12 @@ variable "ebs_deletion" {
 }
 
 variable "through_put" {
-  default     = ""
+  default     = null
   description = "The throughput to provision for a gp3 volume in MiB/s (specified as an integer, e.g., 500), with a maximum of 1,000 MiB/s."
 }
 
 variable "ipos_value" {
-  default     = ""
+  default     = null
   description = "The amount of provisioned IOPS. This must be set with a volume_type of io1/io2/gp3."
 
 }
@@ -116,13 +116,13 @@ variable "force_delete" {
 }
 
 variable "load_balancer_arn" {
-  default     = ""
+  default     = null
   description = "List of elastic load balancer names to add to the autoscaling group names. Only valid for classic load balancers. "
 
 }
 
 variable "target_group_arn" {
-  default     = ""
+  default     = null
   description = "Set of aws_alb_target_group ARNs, for use with Application or Network Load Balancing. To remove all target group attachments an empty list should be specified."
 
 }
@@ -139,7 +139,17 @@ variable "launch_version" {
 
 }
 
-variable "iam_role" {
+variable "iam_role_name" {
   default = ""
+
+}
+
+variable "user_data" {
+  default = ""
+
+}
+
+variable "propagate_at_launch" {
+  default = true
 
 }
