@@ -49,39 +49,12 @@ module "iam_role_bastion" {
 }
 
 module "security_group_bastion" {
-  source     = "../module/security_group"
-  name       = var.name
-  env        = var.env
-  aws_region = var.aws_region
-  vpc_id     = data.terraform_remote_state.vpc_1.outputs.vpc_1_id
+  source        = "../module/security_group"
+  name          = var.name
+  env           = var.env
+  aws_region    = var.aws_region
+  vpc_id        = data.terraform_remote_state.vpc_1.outputs.vpc_1_id
   ingress_rules = var.ingress_rules
-  # ingress_rules = {
-  #   rule1 = {
-  #   from_port       = 22
-  #   to_port         = 22
-  #   protocol        = "tcp"
-  #   cidr_blocks     = ["0.0.0.0/0"]
-  #   security_groups = []
-  #   }
-  #   # Add more ingress rules as needed
-  # }
-  # {
-  # from_port = 80
-  # to_port = 80
-  # protocol = "tcp"
-  # cidr_blocks = ["0.0.0.0/0"]
-  # security_groups  = []
-  # }
-
-
   egress_rules = var.egress_rules
-  # egress_rules = {
-  #   rule1 = {
-  #     from_port       = 0
-  #     to_port         = 0
-  #     protocol        = "-1"
-  #     cidr_blocks     = ["0.0.0.0/0"]
-  #     security_groups = []
-  #   }
-  # }
+
 }

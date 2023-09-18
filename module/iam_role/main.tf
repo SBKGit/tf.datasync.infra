@@ -14,8 +14,12 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
 resource "aws_iam_role" "iam_role" {
   name                = "${var.name}-${var.env}-iam-role"
   path                = var.path_name
-  managed_policy_arns = [aws_iam_policy.policy.arn, var.managed_arn]
+  managed_policy_arns = concat([aws_iam_policy.policy.arn], var.managed_arn)
   assume_role_policy  = data.aws_iam_policy_document.instance_assume_role_policy.json
+  tags = {
+    Name        = "${var.name} ${var.env} role"
+    Environment = var.env
+  }
 }
 
 

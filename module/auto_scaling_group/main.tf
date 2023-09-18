@@ -21,7 +21,12 @@ resource "aws_launch_template" "launch_tmpl" {
       encrypted             = var.enable_encryption
     }
   }
+  tags = {
+    Name        = "${var.name} ${var.env}"
+    Environment = var.env
+  }
 }
+
 
 #Attach IAM role with EC2 machine
 resource "aws_iam_instance_profile" "instance_profile" {
@@ -55,10 +60,15 @@ resource "aws_autoscaling_group" "asg" {
   }
 
   tag {
-    key   = "Name"
-    value = var.name
-
-    propagate_at_launch = var.propagate_at_launch
+    key = "Environment"
+    value = var.env
+    propagate_at_launch = true  
   }
+
+  tag {
+    key = "Name"
+    value = "${var.name} ${var.env}"
+    propagate_at_launch = true
+}
 }
 
