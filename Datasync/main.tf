@@ -73,7 +73,7 @@ module "vpc_endpoint" {
 
 module "security_group_endpoint" {
   source        = "../module/security_group"
-  name          = "${var.name}_endpoint"
+  name          = "${var.name}-endpoint"
   env           = var.env
   aws_region    = var.aws_region
   vpc_id        = data.terraform_remote_state.vpc_1.outputs.vpc_1_id
