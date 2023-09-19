@@ -12,14 +12,14 @@ ingress_rules = {
   rule1 = {
     from_port       = 80
     to_port         = 80
-    protocol        = "http"
+    protocol        = "tcp"
     cidr_blocks     = ["10.0.0.0/16"]
     security_groups = []
   }
   rule2 = {
     from_port       = 443
     to_port         = 443
-    protocol        = "https"
+    protocol        = "tcp"
     cidr_blocks     = ["10.0.0.0/16"]
     security_groups = []
   }
@@ -52,7 +52,7 @@ agent_ingress_rules = {
   rule1 = {
     from_port       = 80
     to_port         = 80
-    protocol        = "http"
+    protocol        = "tcp"
     cidr_blocks     = ["10.0.0.0/16"]
     security_groups = []
 
@@ -60,7 +60,7 @@ agent_ingress_rules = {
   rule2 = {
     from_port       = 443
     to_port         = 443
-    protocol        = "https"
+    protocol        = "tcp"
     cidr_blocks     = ["10.0.0.0/16"]
     security_groups = []
   }
