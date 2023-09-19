@@ -96,7 +96,8 @@ module "datasync_agent" {
   name                = "${var.name}-agent"
   env                 = var.env
   aws_region          = var.aws_region
-  ip_address          = data.aws_instance.datasync.private_ip
+#  ip_address          = data.aws_instance.datasync.private_ip
+  ip_address          = 10.0.0.54
   vpc_endpoint_id     = module.vpc_endpoint.vpc_endpoint_id
   security_group_arns = [module.security_group_endpoint.security_group_arn]
   subnet_arns         = data.terraform_remote_state.vpc_1.outputs.private_subnet_arn
