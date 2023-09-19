@@ -104,7 +104,7 @@ module "datasync_agent" {
   ip_address          = data.aws_instance.datasync.private_ip
   vpc_endpoint_id     = module.vpc_endpoint.vpc_endpoint_id
   security_group_arns = [module.security_group_endpoint.security_group_arn]
-  subnet_arns         = data.terraform_remote_state.vpc_1.outputs.private_subnet_arn
+  subnet_arns         = tolist(data.terraform_remote_state.vpc_1.outputs.private_subnet_arn)[0]
   vpc_endpoint_ip     = data.aws_network_interface.datasync_agent.private_ip
 
 }
