@@ -30,6 +30,13 @@ ingress_rules = {
     cidr_blocks     = ["10.0.0.0/16"]
     security_groups = []
   }
+  rule4 = {
+    from_port       = 1024
+    to_port         = 1064
+    protocol        = "tcp"
+    cidr_blocks     = ["10.0.0.0/16"]
+    security_groups = []
+  }
 }
 
 egress_rules = {
