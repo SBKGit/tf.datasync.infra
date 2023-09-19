@@ -53,6 +53,11 @@ variable "service_name" {
 
 }
 
+variable "public_ip" {
+  default = false
+  
+}
+
 variable "managed_arn" {
   default = []
 

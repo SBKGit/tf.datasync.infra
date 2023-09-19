@@ -23,6 +23,10 @@ variable "key_name" {
   description = "The key name to use for the instance."
 }
 
+variable "public_ip" {
+  default = false
+  
+}
 variable "securiy_group_id" {
   default     = ""
   description = "A list of security group IDs to associate with."

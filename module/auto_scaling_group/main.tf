@@ -4,7 +4,11 @@ resource "aws_launch_template" "launch_tmpl" {
   image_id               = var.ami_id
   instance_type          = var.instance_type
   key_name               = var.key_name
-  vpc_security_group_ids = var.securiy_group_id
+  network_interfaces {
+    associate_public_ip_address = var.public_ip
+    security_groups = var.securiy_group_id
+  }
+ 
   iam_instance_profile {
     name = aws_iam_instance_profile.instance_profile.name
   }
