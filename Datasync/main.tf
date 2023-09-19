@@ -86,7 +86,7 @@ data "aws_instance" "datasync" {
   depends_on = [module.asg_datasync]
   filter {
     name   = "tag:Name"
-    values = [module.asg_datasync.asg_name]
+    values = ["${var.name} ${var.env}"]
   }
 }
 
