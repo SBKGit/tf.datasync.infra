@@ -90,17 +90,21 @@ data "aws_instance" "datasync" {
   }
 }
 
+data "aws_network_interface" "datasync_agent" {
+  id = tolist(module.vpc_endpoint.vpc_endpoint_network_ids)[0]
+}
+
 
 module "datasync_agent" {
-  source              = "../module/datasync_agent"
-  name                = "${var.name}-agent"
-  env                 = var.env
-  aws_region          = var.aws_region
-#  ip_address          = data.aws_instance.datasync.private_ip
-  ip_address          = 10.0.0.54
+  source     = "../module/datasync_agent"
+  name       = "${var.name}-agent"
+  env        = var.env
+  aws_region = var.aws_region
+  #  ip_address          = data.aws_instance.datasync.private_ip
+  ip_address          = data.aws_instance.datasync.private_ip
   vpc_endpoint_id     = module.vpc_endpoint.vpc_endpoint_id
   security_group_arns = [module.security_group_endpoint.security_group_arn]
   subnet_arns         = data.terraform_remote_state.vpc_1.outputs.private_subnet_arn
-  vpc_endpoint_ip     = module.vpc_endpoint.vpc_endpoint_network_ids
+  vpc_endpoint_ip     = data.aws_network_interface.datasync_agent.private_ip
 
 }
