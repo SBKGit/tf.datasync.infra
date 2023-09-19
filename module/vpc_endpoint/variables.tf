@@ -23,7 +23,7 @@ variable "subnet_id" {
 
 variable "security_group" {
   default = []
-  
+
 }
 
 variable "vpc_endpoint_type" {

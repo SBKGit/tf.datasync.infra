@@ -1,14 +1,14 @@
 #create launch templete for auto scaling group
 resource "aws_launch_template" "launch_tmpl" {
-  name_prefix            = "${var.name}-launch-template"
-  image_id               = var.ami_id
-  instance_type          = var.instance_type
-  key_name               = var.key_name
+  name_prefix   = "${var.name}-launch-template"
+  image_id      = var.ami_id
+  instance_type = var.instance_type
+  key_name      = var.key_name
   network_interfaces {
     associate_public_ip_address = var.public_ip
-    security_groups = var.securiy_group_id
+    security_groups             = var.securiy_group_id
   }
- 
+
   iam_instance_profile {
     name = aws_iam_instance_profile.instance_profile.name
   }
@@ -64,15 +64,15 @@ resource "aws_autoscaling_group" "asg" {
   }
 
   tag {
-    key = "Environment"
-    value = var.env
-    propagate_at_launch = true  
+    key                 = "Environment"
+    value               = var.env
+    propagate_at_launch = true
   }
 
   tag {
-    key = "Name"
-    value = "${var.name} ${var.env}"
+    key                 = "Name"
+    value               = "${var.name} ${var.env}"
     propagate_at_launch = true
-}
+  }
 }
 

@@ -27,7 +27,7 @@ module "asg_bastion" {
   ami_id            = data.aws_ami.amazon-linux-2.id
   instance_type     = var.instance_type
   key_name          = var.key_name
-  public_ip = var.public_ip
+  public_ip         = var.public_ip
   user_data         = "userdata.sh"
   securiy_group_id  = [module.security_group_bastion.security_group_id]
   iam_role_name     = module.iam_role_bastion.iam_role_name
@@ -56,6 +56,6 @@ module "security_group_bastion" {
   aws_region    = var.aws_region
   vpc_id        = data.terraform_remote_state.vpc_1.outputs.vpc_1_id
   ingress_rules = var.ingress_rules
-  egress_rules = var.egress_rules
+  egress_rules  = var.egress_rules
 
 }

@@ -25,7 +25,7 @@ variable "key_name" {
 
 variable "public_ip" {
   default = false
-  
+
 }
 variable "securiy_group_id" {
   default     = ""

@@ -25,7 +25,7 @@ variable "key_name" {
 
 variable "public_ip" {
 
-  
+
 }
 
 variable "max_size" {
