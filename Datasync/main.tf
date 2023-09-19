@@ -50,7 +50,7 @@ module "iam_role_datasync" {
 
 module "security_group_datasync_instance" {
   source        = "../module/security_group"
-  name          = "${var.name}_instance"
+  name          = "${var.name}-instance"
   env           = var.env
   aws_region    = var.aws_region
   vpc_id        = data.terraform_remote_state.vpc_1.outputs.vpc_1_id
