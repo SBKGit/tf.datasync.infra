@@ -17,6 +17,16 @@ output "public_subnet_id" {
 
 }
 
+output "private_subnet_arn" {
+  value = module.private_subnet.subnet_arn
+
+}
+
+output "public_subnet_arn" {
+  value = module.public_subnet.subnet_arn
+
+}
+
 output "nat_gateway_id" {
   value = module.nat_gateway.nat_id
 

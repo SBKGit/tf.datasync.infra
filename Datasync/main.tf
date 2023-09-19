@@ -62,7 +62,7 @@ module "security_group_datasync_instance" {
 module "vpc_endpoint" {
   source            = "../module/vpc_endpoint"
   vpc_id            = data.terraform_remote_state.vpc_1.outputs.vpc_1_id
-  security_group    = module.security_group_endpoint.security_group_id
+  security_group    = [module.security_group_endpoint.security_group_id]
   subnet_id         = data.terraform_remote_state.vpc_1.outputs.private_subnet_id
   vpc_endpoint_type = var.vpc_endpoint_type
 
@@ -80,6 +80,7 @@ module "security_group_endpoint" {
 }
 
 data "aws_instance" "datasync" {
+  depends_on = [ module.asg_datasync ]
   filter {
     name   = "tag:Name"
     values = [module.asg_datasync.asg_name]
@@ -93,9 +94,9 @@ module "datasync_agent" {
   env                 = var.env
   aws_region          = var.aws_region
   ip_address          = data.aws_instance.datasync.private_ip
-  vpc_endpoint_id     = module.vpc_endpoint.vpc_endpoint_id
-  security_group_arns = module.security_group_endpoint.security_group_arn
+  vpc_endpoint_id     = "${module.vpc_endpoint.vpc_endpoint_id}"
+  security_group_arns = [module.security_group_endpoint.security_group_arn]
   subnet_arns         = data.terraform_remote_state.vpc_1.outputs.private_subnet_arn
-  vpc_endpoint_ip     = module.vpc_endpoint.vpc_endpoint_network_ids[0]
+  vpc_endpoint_ip     = module.vpc_endpoint.vpc_endpoint_network_ids
 
 }
