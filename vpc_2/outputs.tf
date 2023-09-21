@@ -1,9 +1,9 @@
-output "vpc_1_id" {
-  value = module.vpc_1.vpc_id
+output "vpc_2_id" {
+  value = module.vpc_2.vpc_id
 }
 
-output "igw_1_id" {
-  value = module.igw_1.igw_id
+output "igw_2_id" {
+  value = module.igw_2.igw_id
 
 }
 

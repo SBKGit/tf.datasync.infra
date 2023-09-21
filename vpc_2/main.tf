@@ -9,7 +9,7 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-module "vpc_1" {
+module "vpc_2" {
   source   = "../module/vpc"
   vpc_cidr = var.vpc_cidr
   name     = var.vpc_name
@@ -17,9 +17,9 @@ module "vpc_1" {
 
 }
 
-module "igw_1" {
+module "igw_2" {
   source = "../module/internet_gateway"
-  vpc_id = module.vpc_1.vpc_id
+  vpc_id = module.vpc_2.vpc_id
   name   = var.vpc_name
   env    = var.env
 
@@ -31,7 +31,7 @@ module "private_subnet" {
   env               = var.env
   availability_zone = data.aws_availability_zones.available.names
   subnet_cidr       = var.private_cidr_block
-  vpc_id            = module.vpc_1.vpc_id
+  vpc_id            = module.vpc_2.vpc_id
 }
 
 module "public_subnet" {
@@ -40,7 +40,7 @@ module "public_subnet" {
   env               = var.env
   availability_zone = data.aws_availability_zones.available.names
   subnet_cidr       = var.public_cidr_block
-  vpc_id            = module.vpc_1.vpc_id
+  vpc_id            = module.vpc_2.vpc_id
 }
 
 module "nat_gateway" {
@@ -55,10 +55,10 @@ module "public_route_table" {
   source = "../module/route_table"
   name   = "${var.vpc_name}-public"
   env    = var.env
-  vpc_id = module.vpc_1.vpc_id
+  vpc_id = module.vpc_2.vpc_id
   route = [{
     cidr_block = "0.0.0.0/0"
-    gateway_id = module.igw_1.igw_id
+    gateway_id = module.igw_2.igw_id
     },
     {
       cidr_block = var.vpc_cidr
@@ -73,7 +73,7 @@ module "private_route_table" {
   name       = "${var.vpc_name}-private"
   aws_region = var.aws_region
   env        = var.env
-  vpc_id     = module.vpc_1.vpc_id
+  vpc_id     = module.vpc_2.vpc_id
   route = [{
     cidr_block = var.vpc_cidr
     gateway_id = "local"

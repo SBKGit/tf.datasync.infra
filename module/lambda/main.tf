@@ -1,7 +1,7 @@
 #create lambda function
 resource "aws_lambda_function" "lambda" {
   filename      = var.filename
-  function_name = "${var.name}_${var.env}"
+  function_name = "${var.name}_${var.env}_lambda"
   role          = var.iam_role
   handler       = var.handler_name
   runtime       = var.runtime
