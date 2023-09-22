@@ -13,7 +13,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "s3_bucket" {
   bucket = aws_s3_bucket.s3_bucket.id
   rule {
     id = "${var.name}-${var.env}-expiry-days"
-
+    status = var.status
     expiration {
       days = var.expiration_days
     }

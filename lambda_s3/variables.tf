@@ -91,3 +91,10 @@ variable "email_addresses" {
 variable "target_type" {
 
 }
+variable "status" {
+  
+}
+
+variable "action_items" {
+  
+}

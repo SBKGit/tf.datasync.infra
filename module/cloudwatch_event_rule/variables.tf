@@ -19,10 +19,6 @@ variable "target_id" {
 
 }
 
-variable "target_name" {
-
-}
-
 variable "event_pattern" {
 
 }

@@ -4,19 +4,20 @@ env        = "dev"
 aws_region = "eu-west-2"
 
 #S3 bucket variables
-bucket_name      = ["landing-bucket1", "landing-bucket2", "landing-bucket3"]
+bucket_name      = ["landing-bucket-1", "landing-bucket-2", "landing-bucket-3", "errr-zone-bucket"]
 acl              = "private"
 enable_lifecycle = true
 expiration_days  = 5
+status = "Enabled"
 
 #lambda iam role variables
 path_name   = "/app/"
-managed_arn = ["lambda.amazonaws.com"]
+service_name = ["lambda.amazonaws.com"]
+managed_arn = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
 
 #lambda security group variables
 
-handler_name = "filename" #mention file name
-runtime      = ""
+
 ingress_rules = {
   rule1 = {
     from_port       = 0
@@ -43,3 +44,14 @@ email_addresses = ["emaple@gmail.com", "example2@gmail.com"]
 #event variables 
 
 target_type = "lambda"
+
+
+handler_name = "test.js" #mention file name
+runtime = "nodejs18.x"
+
+action_items = [ "ec2:DescribeInstances",
+                "ec2:CreateNetworkInterface",
+                "ec2:AttachNetworkInterface",
+                "ec2:DescribeNetworkInterfaces",
+                "autoscaling:CompleteLifecycleAction",
+                "ec2:DeleteNetworkInterface"]

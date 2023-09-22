@@ -31,7 +31,7 @@ terraform init -backend-config="<env>/backend.tfvars"
 ```
 - terraform plan to check what are we going to deploy
 ```sh
-terraform plan --var-file=<dev>/<env>.tfvars
+terraform plan --var-file=<env>/<env>.tfvars
 ```
 - Apply changes to aws account.
 ```sh
