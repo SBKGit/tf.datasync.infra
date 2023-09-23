@@ -13,7 +13,7 @@ status           = "Enabled"
 #lambda iam role variables
 path_name    = "/app/"
 service_name = ["lambda.amazonaws.com"]
-managed_arn  = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
+managed_arn  = ["arn:aws:iam::aws:policy/AmazonS3FullAccess", "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess", "arn:aws:iam::aws:policy/AmazonSQSFullAccess", "arn:aws:iam::aws:policy/AmazonSNSFullAccess", "arn:aws:iam::aws:policy/AmazonSESFullAccess"]
 
 #lambda security group variables
 
@@ -54,4 +54,5 @@ action_items = ["ec2:DescribeInstances",
   "ec2:AttachNetworkInterface",
   "ec2:DescribeNetworkInterfaces",
   "autoscaling:CompleteLifecycleAction",
-"ec2:DeleteNetworkInterface"]
+  "ec2:DeleteNetworkInterface",
+"log:*"]

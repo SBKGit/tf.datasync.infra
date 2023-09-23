@@ -25,7 +25,7 @@ module "lambda_filename_prefix" {
 
 module "lambda_iam_role" {
   source       = "../module/iam_role"
-  name         = var.name
+  name         = "${var.name}-lambda"
   env          = var.env
   aws_region   = var.aws_region
   path_name    = var.path_name
@@ -37,7 +37,7 @@ module "lambda_iam_role" {
 module "lambda_security_group" {
   source        = "../module/security_group"
   env           = var.env
-  name          = var.env
+  name          = var.name
   vpc_id        = data.terraform_remote_state.vpc2.outputs.vpc_2_id
   ingress_rules = var.ingress_rules
   egress_rules  = var.egress_rules
