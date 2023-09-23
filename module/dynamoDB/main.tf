@@ -8,18 +8,11 @@ resource "aws_dynamodb_table" "dynamoDB" {
     enabled = var.encryption
   }
   attribute {
-    name = "pk"
+    name = "prefix"
     type = "S" # String attribute
   }
 
-  attribute {
-    name = "sk"
-    type = "N" # Numeric attribute
-  }
-
-  hash_key  = "pk"
-  range_key = "sk"
-
+  hash_key = "prefix"
   tags = {
     Name        = "${var.name}-dynamoDB"
     Environment = var.env

@@ -4,15 +4,15 @@ variable "aws_region" {
 }
 
 variable "name" {
-  
+
 }
 
 variable "env" {
-  
+
 }
 
 variable "endpoint" {
-  default        = ""
+  default     = ""
   description = "(Required) Endpoint to send data to. The contents vary with the protocol. See details below."
 }
 

@@ -5,7 +5,7 @@ resource "aws_sns_topic_subscription" "sns_topic_subscription" {
   endpoint                        = var.endpoint
   confirmation_timeout_in_minutes = var.confirmation_timeout
   endpoint_auto_confirms          = var.auto_confirms
-  filter_policy = <<EOF
+  filter_policy                   = <<EOF
 {
   "Valid": [
     "true"

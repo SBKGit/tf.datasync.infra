@@ -4,7 +4,7 @@ env        = "dev"
 aws_region = "eu-west-2"
 
 #S3 bucket variables
-bucket_name      = ["landing-bucket-1", "landing-bucket-2", "landing-bucket-3", "errr-zone-bucket"]
+bucket_name      = ["landing-bucket-1", "landing-bucket-2", "landing-bucket-3", "error-zone-bucket"]
 acl              = "private"
 enable_lifecycle = true
 expiration_days  = 5

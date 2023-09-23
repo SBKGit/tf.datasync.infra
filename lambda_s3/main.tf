@@ -10,10 +10,10 @@ data "archive_file" "lambda_zip" {
 
 }
 
-module "lambda" {
+module "lambda_filename_prefix" {
   source             = "../module/lambda"
   filename           = "${var.name}_${var.env}.zip"
-  name               = var.name
+  name               = "filename_prefix_validation"
   env                = var.env
   aws_region         = var.aws_region
   iam_role           = module.lambda_iam_role.iam_role_arn
@@ -78,6 +78,17 @@ module "s3_bucket_3" {
   status           = var.status
 }
 
+module "s3_bucket_4" {
+  source           = "../module/s3"
+  name             = var.bucket_name[3]
+  enable_lifecycle = var.enable_lifecycle
+  acl              = var.acl
+  expiration_days  = var.expiration_days
+  aws_region       = var.aws_region
+  env              = var.env
+  status           = var.status
+}
+
 module "email_identities" {
   source          = "../module/ses_identity"
   email_addresses = var.email_addresses
@@ -101,8 +112,8 @@ module "event_rule" {
     resources : [module.s3_bucket_1.s3_arn, module.s3_bucket_3.s3_arn, module.s3_bucket_3.s3_arn
     ]
   })
-  target_arn = module.lambda.lambda_arn
-  target_id  = module.lambda.lambda_name
+  target_arn = module.lambda_filename_prefix.lambda_arn
+  target_id  = module.lambda_filename_prefix.lambda_name
 
 
 }

@@ -43,6 +43,21 @@ output "s3_bucket_name_3" {
 
 }
 
+output "s3_arn_4" {
+  value       = module.s3_bucket_4.s3_arn
+  description = "output to display subnet id"
+}
+
+output "s3_id_4" {
+  value = module.s3_bucket_4.s3_id
+
+}
+
+output "s3_bucket_name_4" {
+  value = module.s3_bucket_4.s3_bucket_name
+
+}
+
 output "lambda_iam_role" {
   value = module.lambda_iam_role.iam_role_arn
 

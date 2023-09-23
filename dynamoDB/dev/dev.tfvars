@@ -1,4 +1,4 @@
-app_name     = "landing-zone"
+app_name     = "cross-ref-lookup"
 env          = "dev"
 billing_mode = "PAY_PER_REQUEST"
 encryption   = true
