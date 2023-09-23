@@ -31,5 +31,5 @@ variable "enable_lifecycle" {
 
 
 variable "status" {
-  
+
 }

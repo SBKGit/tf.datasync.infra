@@ -3,9 +3,17 @@ variable "aws_region" {
 
 }
 
+variable "name" {
+  
+}
+
+variable "env" {
+  
+}
+
 variable "endpoint" {
   default        = ""
-  dcedescription = "(Required) Endpoint to send data to. The contents vary with the protocol. See details below."
+  description = "(Required) Endpoint to send data to. The contents vary with the protocol. See details below."
 }
 
 variable "topic_arn" {
@@ -31,3 +39,15 @@ variable "auto_confirms" {
   description = "(Optional) Whether the endpoint is capable of auto confirming subscription (e.g., PagerDuty). Default is True."
 
 }
+
+# variable "enable_filter_policy" {
+#   description = "Enable or disable the subscription filter policy"
+#   type        = bool
+#   default     = false
+# }
+
+# variable "filter_policy" {
+#   description = "Filter policy for SNS subscription"
+#   type        = map(string)
+#   default     = {}
+# }

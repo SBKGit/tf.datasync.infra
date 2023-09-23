@@ -8,12 +8,12 @@ bucket_name      = ["landing-bucket-1", "landing-bucket-2", "landing-bucket-3", 
 acl              = "private"
 enable_lifecycle = true
 expiration_days  = 5
-status = "Enabled"
+status           = "Enabled"
 
 #lambda iam role variables
-path_name   = "/app/"
+path_name    = "/app/"
 service_name = ["lambda.amazonaws.com"]
-managed_arn = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
+managed_arn  = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
 
 #lambda security group variables
 
@@ -47,11 +47,11 @@ target_type = "lambda"
 
 
 handler_name = "test.js" #mention file name
-runtime = "nodejs18.x"
+runtime      = "nodejs18.x"
 
-action_items = [ "ec2:DescribeInstances",
-                "ec2:CreateNetworkInterface",
-                "ec2:AttachNetworkInterface",
-                "ec2:DescribeNetworkInterfaces",
-                "autoscaling:CompleteLifecycleAction",
-                "ec2:DeleteNetworkInterface"]
+action_items = ["ec2:DescribeInstances",
+  "ec2:CreateNetworkInterface",
+  "ec2:AttachNetworkInterface",
+  "ec2:DescribeNetworkInterfaces",
+  "autoscaling:CompleteLifecycleAction",
+"ec2:DeleteNetworkInterface"]

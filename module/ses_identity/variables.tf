@@ -3,5 +3,5 @@ variable "email_addresses" {
 }
 
 variable "aws_region" {
-    
+
 }

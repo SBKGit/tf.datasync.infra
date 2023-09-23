@@ -6,7 +6,7 @@ terraform {
 data "archive_file" "lambda_zip" {
   type        = "zip"
   output_path = "${var.name}_${var.env}.zip"
-  source_file  = "${var.env}/${var.handler_name}"
+  source_file = "${var.env}/${var.handler_name}"
 
 }
 
@@ -52,7 +52,7 @@ module "s3_bucket_1" {
   expiration_days  = var.expiration_days
   aws_region       = var.aws_region
   env              = var.env
-  status = var.status
+  status           = var.status
 
 }
 
@@ -64,7 +64,7 @@ module "s3_bucket_2" {
   expiration_days  = var.expiration_days
   aws_region       = var.aws_region
   env              = var.env
-  status = var.status
+  status           = var.status
 }
 
 module "s3_bucket_3" {
@@ -75,13 +75,13 @@ module "s3_bucket_3" {
   expiration_days  = var.expiration_days
   aws_region       = var.aws_region
   env              = var.env
-  status = var.status
+  status           = var.status
 }
 
 module "email_identities" {
   source          = "../module/ses_identity"
   email_addresses = var.email_addresses
-  aws_region = var.aws_region
+  aws_region      = var.aws_region
 
 }
 
@@ -98,11 +98,11 @@ module "event_rule" {
     detail-type : [
       "ObjectCreated:*"
     ],
-    resources : [module.s3_bucket_1.s3_arn,module.s3_bucket_3.s3_arn,module.s3_bucket_3.s3_arn
+    resources : [module.s3_bucket_1.s3_arn, module.s3_bucket_3.s3_arn, module.s3_bucket_3.s3_arn
     ]
   })
-  target_arn  = module.lambda.lambda_arn
-  target_id = module.lambda.lambda_name
+  target_arn = module.lambda.lambda_arn
+  target_id  = module.lambda.lambda_name
 
 
 }
