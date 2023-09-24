@@ -56,6 +56,14 @@ module "s3_bucket_1" {
 
 }
 
+module "s3_notification_bucket_1" {
+  source      = "../module/s3_notification_lambda"
+  eventbridge = true
+  bucket_id   = module.s3_bucket_1.s3_id
+  aws_region  = var.aws_region
+
+}
+
 module "s3_bucket_2" {
   source           = "../module/s3"
   name             = var.bucket_name[1]
@@ -67,6 +75,14 @@ module "s3_bucket_2" {
   status           = var.status
 }
 
+module "s3_notification_bucket_2" {
+  source      = "../module/s3_notification_lambda"
+  eventbridge = true
+  bucket_id   = module.s3_bucket_2.s3_id
+  aws_region  = var.aws_region
+
+}
+
 module "s3_bucket_3" {
   source           = "../module/s3"
   name             = var.bucket_name[2]
@@ -76,6 +92,14 @@ module "s3_bucket_3" {
   aws_region       = var.aws_region
   env              = var.env
   status           = var.status
+}
+
+module "s3_notification_bucket_3" {
+  source      = "../module/s3_notification_lambda"
+  eventbridge = true
+  bucket_id   = module.s3_bucket_3.s3_id
+  aws_region  = var.aws_region
+
 }
 
 module "s3_bucket_4" {

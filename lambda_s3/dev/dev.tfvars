@@ -4,7 +4,7 @@ env        = "dev"
 aws_region = "eu-west-2"
 
 #S3 bucket variables
-bucket_name      = ["landing-bucket-1", "landing-bucket-2", "landing-bucket-3", "error-zone-bucket"]
+bucket_name      = ["landing-buckett-1", "landing-buckett-2", "landing-buckett-3", "error-zone-buckett"]
 acl              = "private"
 enable_lifecycle = true
 expiration_days  = 5
@@ -12,8 +12,8 @@ status           = "Enabled"
 
 #lambda iam role variables
 path_name    = "/app/"
-service_name = ["lambda.amazonaws.com"]
-managed_arn  = ["arn:aws:iam::aws:policy/AmazonS3FullAccess", "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess", "arn:aws:iam::aws:policy/AmazonSQSFullAccess", "arn:aws:iam::aws:policy/AmazonSNSFullAccess", "arn:aws:iam::aws:policy/AmazonSESFullAccess"]
+service_name = ["lambda.amazonaws.com", "s3.amazonaws.com"]
+managed_arn  = ["arn:aws:iam::aws:policy/AWSLambdaExecute", "arn:aws:iam::aws:policy/AmazonS3FullAccess", "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess", "arn:aws:iam::aws:policy/AmazonSQSFullAccess", "arn:aws:iam::aws:policy/AmazonSNSFullAccess", "arn:aws:iam::aws:policy/AmazonSESFullAccess"]
 
 #lambda security group variables
 
@@ -55,4 +55,4 @@ action_items = ["ec2:DescribeInstances",
   "ec2:DescribeNetworkInterfaces",
   "autoscaling:CompleteLifecycleAction",
   "ec2:DeleteNetworkInterface",
-"log:*"]
+"logs:*"]

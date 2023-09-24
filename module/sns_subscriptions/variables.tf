@@ -40,14 +40,13 @@ variable "auto_confirms" {
 
 }
 
-# variable "enable_filter_policy" {
-#   description = "Enable or disable the subscription filter policy"
-#   type        = bool
-#   default     = false
-# }
+variable "enable_filter_policy" {
+  description = "Enable or disable the subscription filter policy"
+  type        = bool
+  default     = false
+}
 
-# variable "filter_policy" {
-#   description = "Filter policy for SNS subscription"
-#   type        = map(string)
-#   default     = {}
-# }
+variable "filter_policy" {
+  description = "Filter policy for SNS subscription"
+  default     = {}
+}
