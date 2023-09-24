@@ -34,3 +34,23 @@ variable "encryption" {
   description = "Encryption at rest options. AWS DynamoDB tables are automatically encrypted at rest with an AWS-owned Customer Master Key if this argument isn't specified."
 
 }
+
+variable "hash_key" {
+
+}
+variable "range_key" {
+  default = ""
+
+}
+
+variable "attribute_name" {
+
+
+}
+
+variable "attribute_type" {
+  default = "S"
+
+}
+variable "item" {
+}
