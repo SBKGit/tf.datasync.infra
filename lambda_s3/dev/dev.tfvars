@@ -47,7 +47,7 @@ target_type = "lambda"
 
 
 handler_name = "test.js" #mention file name
-runtime      = "nodejs18.x"
+runtime      = "python3.11"
 
 action_items = ["ec2:DescribeInstances",
   "ec2:CreateNetworkInterface",

@@ -3,10 +3,14 @@ terraform {
   }
 }
 
+
+##---------------------------------##
+#-- Lambda configuration start ----##
+##---------------------------------##
 data "archive_file" "lambda_zip" {
   type        = "zip"
   output_path = "${var.name}_${var.env}.zip"
-  source_file = "${var.env}/${var.handler_name}"
+  source_file = "${var.env}/sample.py"
 
 }
 
@@ -16,16 +20,16 @@ module "lambda_filename_prefix" {
   name               = "filename_prefix_validation"
   env                = var.env
   aws_region         = var.aws_region
-  iam_role           = module.lambda_iam_role.iam_role_arn
-  handler_name       = "${var.handler_name}.handler"
+  iam_role           = module.lambda_filename_prefix_iam_role.iam_role_arn
+  handler_name       = "filename_prefix_validation_${var.env}.handler"
   runtime            = var.runtime
-  security_group_ids = [module.lambda_security_group.security_group_id]
+  security_group_ids = [module.lambda_filename_prefix_sg.security_group_id]
   subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
 }
 
-module "lambda_iam_role" {
+module "lambda_filename_prefix_iam_role" {
   source       = "../module/iam_role"
-  name         = "${var.name}-lambda"
+  name         = "filename-prefix-validation-lambda"
   env          = var.env
   aws_region   = var.aws_region
   path_name    = var.path_name
@@ -34,15 +38,122 @@ module "lambda_iam_role" {
   action_items = var.action_items
 }
 
-module "lambda_security_group" {
+module "lambda_filename_prefix_sg" {
   source        = "../module/security_group"
   env           = var.env
-  name          = var.name
+  name          = "filename-prefix-validation-lambda"
   vpc_id        = data.terraform_remote_state.vpc2.outputs.vpc_2_id
   ingress_rules = var.ingress_rules
   egress_rules  = var.egress_rules
 
 }
+
+
+module "valid_fufilment" {
+  source             = "../module/lambda"
+  filename           = "${var.name}_${var.env}.zip"
+  name               = "valid_fufilment"
+  env                = var.env
+  aws_region         = var.aws_region
+  iam_role           = module.lambda_valid_fufilment_iam_role.iam_role_arn
+  handler_name       = "valid_fufilment_${var.env}.handler"
+  runtime            = var.runtime
+  security_group_ids = [module.valid_fufilment_lambda_sg.security_group_id]
+  subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
+}
+
+module "lambda_valid_fufilment_iam_role" {
+  source       = "../module/iam_role"
+  name         = "valid-fufilment-lambda"
+  env          = var.env
+  aws_region   = var.aws_region
+  path_name    = var.path_name
+  service_name = var.service_name
+  managed_arn  = var.managed_arn
+  action_items = var.action_items
+}
+
+module "valid_fufilment_lambda_sg" {
+  source        = "../module/security_group"
+  env           = var.env
+  name          = "valid-fufilment-lambda"
+  vpc_id        = data.terraform_remote_state.vpc2.outputs.vpc_2_id
+  ingress_rules = var.ingress_rules
+  egress_rules  = var.egress_rules
+
+}
+
+module "invalid_file" {
+  source             = "../module/lambda"
+  filename           = "${var.name}_${var.env}.zip"
+  name               = "invalid_file"
+  env                = var.env
+  aws_region         = var.aws_region
+  iam_role           = module.lambda_invalid_file_iam_role.iam_role_arn
+  handler_name       = "invalid_file_${var.env}.handler"
+  runtime            = var.runtime
+  security_group_ids = [module.invalid_file_lambda_sg.security_group_id]
+  subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
+}
+
+module "lambda_invalid_file_iam_role" {
+  source       = "../module/iam_role"
+  name         = "invalid-file-lambda"
+  env          = var.env
+  aws_region   = var.aws_region
+  path_name    = var.path_name
+  service_name = var.service_name
+  managed_arn  = var.managed_arn
+  action_items = var.action_items
+}
+
+module "invalid_file_lambda_sg" {
+  source        = "../module/security_group"
+  env           = var.env
+  name          = "invalid-file-lambda"
+  vpc_id        = data.terraform_remote_state.vpc2.outputs.vpc_2_id
+  ingress_rules = var.ingress_rules
+  egress_rules  = var.egress_rules
+
+}
+
+module "notification" {
+  source             = "../module/lambda"
+  filename           = "${var.name}_${var.env}.zip"
+  name               = "notification"
+  env                = var.env
+  aws_region         = var.aws_region
+  iam_role           = module.lambda_notification_iam_role.iam_role_arn
+  handler_name       = "notification_${var.env}.handler"
+  runtime            = var.runtime
+  security_group_ids = [module.notification_lambda_sg.security_group_id]
+  subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
+}
+
+module "lambda_notification_iam_role" {
+  source       = "../module/iam_role"
+  name         = "invalid-file-lambda"
+  env          = var.env
+  aws_region   = var.aws_region
+  path_name    = var.path_name
+  service_name = var.service_name
+  managed_arn  = var.managed_arn
+  action_items = var.action_items
+}
+
+module "notification_lambda_sg" {
+  source        = "../module/security_group"
+  env           = var.env
+  name          = "notification-lambda"
+  vpc_id        = data.terraform_remote_state.vpc2.outputs.vpc_2_id
+  ingress_rules = var.ingress_rules
+  egress_rules  = var.egress_rules
+
+}
+
+##---------------------------------##
+#-- Lambda configuration start ----##
+##---------------------------------##
 
 module "s3_bucket_1" {
   source           = "../module/s3"
