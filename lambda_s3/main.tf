@@ -132,7 +132,7 @@ module "notification" {
 
 module "lambda_notification_iam_role" {
   source       = "../module/iam_role"
-  name         = "invalid-file-lambda"
+  name         = "notification-lambda"
   env          = var.env
   aws_region   = var.aws_region
   path_name    = var.path_name
