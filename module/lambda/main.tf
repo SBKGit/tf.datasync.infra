@@ -5,6 +5,9 @@ resource "aws_lambda_function" "lambda" {
   role          = var.iam_role
   handler       = var.handler_name
   runtime       = var.runtime
+  environment {
+    variables = var.environment_variables
+  }
   vpc_config {
     security_group_ids = var.security_group_ids
     subnet_ids         = var.subnet_ids

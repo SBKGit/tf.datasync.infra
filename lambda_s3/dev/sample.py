@@ -1,4 +1,4 @@
-b  import json
+import json
 
 def handler(event, context):
     body = {

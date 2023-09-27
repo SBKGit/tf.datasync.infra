@@ -7,24 +7,23 @@ terraform {
 ##---------------------------------##
 #-- Lambda configuration start ----##
 ##---------------------------------##
-data "archive_file" "lambda_zip" {
-  type        = "zip"
-  output_path = "${var.name}_${var.env}.zip"
-  source_file = "${var.env}/sample.py"
-
-}
 
 module "lambda_filename_prefix" {
   source             = "../module/lambda"
-  filename           = "${var.name}_${var.env}.zip"
+  filename           = "filename_prefix_validation.py"
   name               = "filename_prefix_validation"
   env                = var.env
   aws_region         = var.aws_region
   iam_role           = module.lambda_filename_prefix_iam_role.iam_role_arn
-  handler_name       = "filename_prefix_validation_${var.env}.handler"
+  handler_name       = "filename_prefix_validation.lambda_handler"
   runtime            = var.runtime
   security_group_ids = [module.lambda_filename_prefix_sg.security_group_id]
   subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
+  environment_variables = {
+    DYNAMO_TABLE_ERROR_NOTIF = "ErrorNotification"
+    DYNAMO_TABLE_PREFIX_LOOKUP = "PrefixLookupTable"
+    SNS_TOPIC_ARN = data.terraform_remote_state.sns.outputs.sns_topic_arn
+  }
 }
 
 module "lambda_filename_prefix_iam_role" {
@@ -48,18 +47,20 @@ module "lambda_filename_prefix_sg" {
 
 }
 
-
 module "valid_fufilment" {
   source             = "../module/lambda"
-  filename           = "${var.name}_${var.env}.zip"
+  filename           = "valid_fufilment.py"
   name               = "valid_fufilment"
   env                = var.env
   aws_region         = var.aws_region
   iam_role           = module.lambda_valid_fufilment_iam_role.iam_role_arn
-  handler_name       = "valid_fufilment_${var.env}.handler"
+  handler_name       = "valid_fufilment.lambda_handler"
   runtime            = var.runtime
   security_group_ids = [module.valid_fufilment_lambda_sg.security_group_id]
   subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
+  environment_variables = {
+    NOTIF_SQS_NAME = data.terraform_remote_state.sqs.outputs.sqs_notification_name
+  }
 }
 
 module "lambda_valid_fufilment_iam_role" {
@@ -85,15 +86,18 @@ module "valid_fufilment_lambda_sg" {
 
 module "invalid_file" {
   source             = "../module/lambda"
-  filename           = "${var.name}_${var.env}.zip"
+  filename           = "invalid_file.py"
   name               = "invalid_file"
   env                = var.env
   aws_region         = var.aws_region
   iam_role           = module.lambda_invalid_file_iam_role.iam_role_arn
-  handler_name       = "invalid_file_${var.env}.handler"
+  handler_name       = "invalid_file.lambda_handler"
   runtime            = var.runtime
   security_group_ids = [module.invalid_file_lambda_sg.security_group_id]
   subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
+  environment_variables = {
+    NOTIF_SQS_NAME = data.terraform_remote_state.sqs.outputs.sqs_notification_name
+  }
 }
 
 module "lambda_invalid_file_iam_role" {
@@ -119,15 +123,19 @@ module "invalid_file_lambda_sg" {
 
 module "notification" {
   source             = "../module/lambda"
-  filename           = "${var.name}_${var.env}.zip"
+  filename           = "notification.py"
   name               = "notification"
   env                = var.env
   aws_region         = var.aws_region
   iam_role           = module.lambda_notification_iam_role.iam_role_arn
-  handler_name       = "notification_${var.env}.handler"
+  handler_name       = "notification.lambda_handler"
   runtime            = var.runtime
   security_group_ids = [module.notification_lambda_sg.security_group_id]
   subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
+  environment_variables = {
+    SENDER_EMAIL = data.terraform_remote_state.sqs.outputs.sqs_notification_name
+    SWIMLANE = upper(var.env)
+  }  
 }
 
 module "lambda_notification_iam_role" {
@@ -249,7 +257,6 @@ module "event_rule" {
   })
   target_arn = module.lambda_filename_prefix.lambda_arn
   target_id  = module.lambda_filename_prefix.lambda_name
-
 
 }
 
