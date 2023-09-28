@@ -1,6 +1,6 @@
 # Create an S3 bucket in VPC2 for landing zone
 resource "aws_s3_bucket" "s3_bucket" {
-  bucket = "${var.name}-${var.env}"
+  bucket = "${var.name}-${var.env}-ih"
   acl    = var.acl
   tags = {
     Name        = "${var.name} ${var.env}"

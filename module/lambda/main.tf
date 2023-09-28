@@ -5,6 +5,7 @@ resource "aws_lambda_function" "lambda" {
   role          = var.iam_role
   handler       = var.handler_name
   runtime       = var.runtime
+  timeout       = var.timeout
   environment {
     variables = var.environment_variables
   }

@@ -41,3 +41,8 @@ variable "environment_variables" {
   description = "A map of environment variables for the Lambda function"
   type        = map(string)
 }
+
+variable "timeout" {
+  default = 180
+  
+}

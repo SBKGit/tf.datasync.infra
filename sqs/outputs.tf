@@ -4,7 +4,7 @@ output "sqs_valid_file_arn" {
 }
 
 output "sqs_valid_file_name" {
-  value = module.sqs_valid_file.sqs_queue_name
+  value = module.sqs_vaild_file.sqs_queue_name
 
 }
 
@@ -19,7 +19,7 @@ output "sqs_valid_file_url" {
 }
 
 output "sqs_invalid_file_name" {
-  value = module.sqs_invalid_file.sqs_queue_name
+  value = module.sqs_invaild_file.sqs_queue_name
 
 }
 

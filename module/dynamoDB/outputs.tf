@@ -7,3 +7,7 @@ output "dynamoDB_arn" {
   value       = aws_dynamodb_table.dynamoDB.arn
   description = "output to display role id"
 }
+
+output "dynamoDB_name" {
+  value = aws_dynamodb_table.dynamoDB.name
+}

@@ -7,28 +7,34 @@ terraform {
 ##---------------------------------##
 #-- Lambda configuration start ----##
 ##---------------------------------##
+data "archive_file" "lambda_filename_prefix_zip" {
+  type        = "zip"
+  output_path = "filename_prefix_${var.env}.zip"
+  source_file = "filename_prefix_validation.py"
+
+}
 
 module "lambda_filename_prefix" {
   source             = "../module/lambda"
-  filename           = "filename_prefix_validation.py"
+  filename           = "filename_prefix_${var.env}.zip"
   name               = "filename_prefix_validation"
   env                = var.env
   aws_region         = var.aws_region
-  iam_role           = module.lambda_filename_prefix_iam_role.iam_role_arn
+  iam_role           = module.lambda_iam_role.iam_role_arn
   handler_name       = "filename_prefix_validation.lambda_handler"
   runtime            = var.runtime
-  security_group_ids = [module.lambda_filename_prefix_sg.security_group_id]
+  security_group_ids = [module.lambda_security_group.security_group_id]
   subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
   environment_variables = {
-    DYNAMO_TABLE_ERROR_NOTIF = "ErrorNotification"
-    DYNAMO_TABLE_PREFIX_LOOKUP = "PrefixLookupTable"
+    DYNAMO_TABLE_ERROR_NOTIF = data.terraform_remote_state.dynamoDB.outputs.dynamoDB_ErrorNotification_name
+    DYNAMO_TABLE_PREFIX_LOOKUP = data.terraform_remote_state.dynamoDB.outputs.dynamoDB_PrefixLookupTable_name
     SNS_TOPIC_ARN = data.terraform_remote_state.sns.outputs.sns_topic_arn
   }
 }
 
-module "lambda_filename_prefix_iam_role" {
+module "lambda_iam_role" {
   source       = "../module/iam_role"
-  name         = "filename-prefix-validation-lambda"
+  name         = "transfer-lambda"
   env          = var.env
   aws_region   = var.aws_region
   path_name    = var.path_name
@@ -37,7 +43,7 @@ module "lambda_filename_prefix_iam_role" {
   action_items = var.action_items
 }
 
-module "lambda_filename_prefix_sg" {
+module "lambda_security_group" {
   source        = "../module/security_group"
   env           = var.env
   name          = "filename-prefix-validation-lambda"
@@ -47,13 +53,20 @@ module "lambda_filename_prefix_sg" {
 
 }
 
+data "archive_file" "lambda_valid_fufilment_zip" {
+  type        = "zip"
+  output_path = "valid_fufilment_${var.env}.zip"
+  source_file = "valid_fufilment.py"
+
+}
+
 module "valid_fufilment" {
   source             = "../module/lambda"
-  filename           = "valid_fufilment.py"
+  filename           = "valid_fufilment_${var.env}.zip"
   name               = "valid_fufilment"
   env                = var.env
   aws_region         = var.aws_region
-  iam_role           = module.lambda_valid_fufilment_iam_role.iam_role_arn
+  iam_role           = module.lambda_iam_role.iam_role_arn
   handler_name       = "valid_fufilment.lambda_handler"
   runtime            = var.runtime
   security_group_ids = [module.valid_fufilment_lambda_sg.security_group_id]
@@ -61,17 +74,6 @@ module "valid_fufilment" {
   environment_variables = {
     NOTIF_SQS_NAME = data.terraform_remote_state.sqs.outputs.sqs_notification_name
   }
-}
-
-module "lambda_valid_fufilment_iam_role" {
-  source       = "../module/iam_role"
-  name         = "valid-fufilment-lambda"
-  env          = var.env
-  aws_region   = var.aws_region
-  path_name    = var.path_name
-  service_name = var.service_name
-  managed_arn  = var.managed_arn
-  action_items = var.action_items
 }
 
 module "valid_fufilment_lambda_sg" {
@@ -84,13 +86,20 @@ module "valid_fufilment_lambda_sg" {
 
 }
 
+data "archive_file" "lambda_invalidfile_zip" {
+  type        = "zip"
+  output_path = "invalid_file_${var.env}.zip"
+  source_file = "invalid_file.py"
+
+}
+
 module "invalid_file" {
   source             = "../module/lambda"
-  filename           = "invalid_file.py"
+  filename           = "invalid_file_${var.env}.zip"
   name               = "invalid_file"
   env                = var.env
   aws_region         = var.aws_region
-  iam_role           = module.lambda_invalid_file_iam_role.iam_role_arn
+  iam_role           = module.lambda_iam_role.iam_role_arn
   handler_name       = "invalid_file.lambda_handler"
   runtime            = var.runtime
   security_group_ids = [module.invalid_file_lambda_sg.security_group_id]
@@ -98,17 +107,6 @@ module "invalid_file" {
   environment_variables = {
     NOTIF_SQS_NAME = data.terraform_remote_state.sqs.outputs.sqs_notification_name
   }
-}
-
-module "lambda_invalid_file_iam_role" {
-  source       = "../module/iam_role"
-  name         = "invalid-file-lambda"
-  env          = var.env
-  aws_region   = var.aws_region
-  path_name    = var.path_name
-  service_name = var.service_name
-  managed_arn  = var.managed_arn
-  action_items = var.action_items
 }
 
 module "invalid_file_lambda_sg" {
@@ -120,14 +118,20 @@ module "invalid_file_lambda_sg" {
   egress_rules  = var.egress_rules
 
 }
+data "archive_file" "lambda_notification_zip" {
+  type        = "zip"
+  output_path = "notification_${var.env}.zip"
+  source_file = "notification.py"
+
+}
 
 module "notification" {
   source             = "../module/lambda"
-  filename           = "notification.py"
+  filename           = "notification_${var.env}.zip"
   name               = "notification"
   env                = var.env
   aws_region         = var.aws_region
-  iam_role           = module.lambda_notification_iam_role.iam_role_arn
+  iam_role           = module.lambda_iam_role.iam_role_arn
   handler_name       = "notification.lambda_handler"
   runtime            = var.runtime
   security_group_ids = [module.notification_lambda_sg.security_group_id]
@@ -136,17 +140,6 @@ module "notification" {
     SENDER_EMAIL = data.terraform_remote_state.sqs.outputs.sqs_notification_name
     SWIMLANE = upper(var.env)
   }  
-}
-
-module "lambda_notification_iam_role" {
-  source       = "../module/iam_role"
-  name         = "notification-lambda"
-  env          = var.env
-  aws_region   = var.aws_region
-  path_name    = var.path_name
-  service_name = var.service_name
-  managed_arn  = var.managed_arn
-  action_items = var.action_items
 }
 
 module "notification_lambda_sg" {
