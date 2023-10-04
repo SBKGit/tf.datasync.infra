@@ -1,4 +1,6 @@
-for dir in {$2..$END}; do
+#!/bin/bash
+
+for ((dir=$2; i <= $#; dir++));do
           echo "Deploying Terraform configurations in $dir"
           cd "$dir"
           echo "terraform init -backend-config=$1/backend.tfvars"
