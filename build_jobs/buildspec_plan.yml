@@ -1,0 +1,71 @@
+version: 0.2
+
+env:
+  variables:
+     Environment: "dev"
+  #parameter-store:
+     # key: "value"
+     # key: "value"
+  #secrets-manager:
+     # key: secret-id:json-key:version-stage:version-id
+     # key: secret-id:json-key:version-stage:version-id
+  #exported-variables:
+     # - variable
+     # - variable
+  #git-credential-helper: yes
+#batch:
+  #fast-fail: true
+  #build-list:
+  #build-matrix:
+  #build-graph:
+phases:
+  #install:
+    #runtime-versions:
+      # name: version
+      # name: version
+    #commands:
+      # - command
+      # - command
+  pre_build:
+    commands:
+      - echo "Entering pre_build phase"
+      # Install Terraform
+      - curl -o terraform.zip https://releases.hashicorp.com/terraform/1.5.6/terraform_1.5.6_linux_amd64.zip
+      - unzip terraform.zip
+      - chmod +x terraform
+      - mv terraform /usr/local/bin/
+  build:
+    commands:
+      - echo "Entering build phase"
+      # Loop through the directories containing your Terraform configurations
+      - |
+        for dir in asg_bastion lambda_s3; do
+          echo "Deploying Terraform configurations in $dir"
+          cd "$dir"
+          terraform init -input=false -backend-config=$Environment/backend.tfvars
+          terraform validate
+          terraform plan -input=false -out=tfplan
+          cd -
+        done
+  #post_build:
+    #commands:
+      # - command
+      # - command
+#reports:
+  #report-name-or-arn:
+    #files:
+      # - location
+      # - location
+    #base-directory: location
+    #discard-paths: yes
+    #file-format: JunitXml | CucumberJson
+#artifacts:
+  #files:
+    # - location
+    # - location
+  #name: $(date +%Y-%m-%d)
+  #discard-paths: yes
+  #base-directory: location
+#cache:
+  #paths:
+    # - paths

@@ -1,0 +1,63 @@
+version: 0.2
+
+env:
+  variables:
+     Environment: "dev"
+  #parameter-store:
+     # key: "value"
+     # key: "value"
+  #secrets-manager:
+     # key: secret-id:json-key:version-stage:version-id
+     # key: secret-id:json-key:version-stage:version-id
+  #exported-variables:
+     # - variable
+     # - variable
+  #git-credential-helper: yes
+#batch:
+  #fast-fail: true
+  #build-list:
+  #build-matrix:
+  #build-graph:
+phases:
+  #install:
+    #runtime-versions:
+      # name: version
+      # name: version
+    # commands:
+    #   sudo yum install -y yum-utils shadow-utils
+    #   sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+    #   sudo yum install -y terraform
+  pre_build:
+    commands:
+      - yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+      - yum install -y terraform
+  build:
+    commands:
+      - cd asg_bastion
+      - terraform init -backend-config=$Environment/backend.tfvars
+      - terraform apply -var-file=$Environment/$Environment.tfvars -auto-approve
+
+
+
+  #post_build:
+    #commands:
+      # - command
+      # - command
+#reports:
+  #report-name-or-arn:
+    #files:
+      # - location
+      # - location
+    #base-directory: location
+    #discard-paths: yes
+    #file-format: JunitXml | CucumberJson
+#artifacts:
+  #files:
+    # - location
+    # - location
+  #name: $(date +%Y-%m-%d)
+  #discard-paths: yes
+  #base-directory: location
+#cache:
+  #paths:
+    # - paths
