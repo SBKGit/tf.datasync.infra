@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 for ((dir=2; dir <= $#; dir++));do
           echo "Deploying Terraform configurations in ${!dir}"
           cd "${!dir}"
