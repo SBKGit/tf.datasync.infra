@@ -31,13 +31,13 @@ def lambda_handler(event, context):
         'body': json.dumps('Event processing complete')
     }
 
-# Process the message
+# Process the message   
 def process_message(data):
    
-    # Extract bucket name
+    # Extract bucket name    
     src_bucket_name = data.get("detail", {}).get("bucket",{}).get("name")
     logger.info("Source Bucket name:"+src_bucket_name)
-   
+       
     # Extract key or filename
     src_file_key=data.get("detail", {}).get("object",{}).get("key")
     file_name = data.get("detail", {}).get("object",{}).get("key")

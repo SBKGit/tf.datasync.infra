@@ -6,6 +6,7 @@ resource "aws_lambda_function" "lambda" {
   handler       = var.handler_name
   runtime       = var.runtime
   timeout       = var.timeout
+  source_code_hash = var.source_code_hash
   environment {
     variables = var.environment_variables
   }

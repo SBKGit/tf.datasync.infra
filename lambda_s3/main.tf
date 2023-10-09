@@ -7,6 +7,8 @@ terraform {
 ##---------------------------------##
 #-- Lambda configuration start ----##
 ##---------------------------------##
+
+
 data "archive_file" "lambda_filename_prefix_zip" {
   type        = "zip"
   output_path = "filename_prefix_${var.env}.zip"
@@ -18,6 +20,7 @@ module "lambda_filename_prefix" {
   source             = "../module/lambda"
   filename           = "filename_prefix_${var.env}.zip"
   name               = "filename_prefix_validation"
+  source_code_hash   = data.archive_file.lambda_filename_prefix_zip.output_base64sha256
   env                = var.env
   aws_region         = var.aws_region
   iam_role           = module.lambda_iam_role.iam_role_arn
@@ -26,11 +29,13 @@ module "lambda_filename_prefix" {
   security_group_ids = [module.lambda_security_group.security_group_id]
   subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
   environment_variables = {
-    DYNAMO_TABLE_ERROR_NOTIF = data.terraform_remote_state.dynamoDB.outputs.dynamoDB_ErrorNotification_name
-    DYNAMO_TABLE_PREFIX_LOOKUP = data.terraform_remote_state.dynamoDB.outputs.dynamoDB_PrefixLookupTable_name
-    SNS_TOPIC_ARN = data.terraform_remote_state.sns.outputs.sns_topic_arn
-  }
+  #   DYNAMO_TABLE_ERROR_NOTIF = data.terraform_remote_state.dynamoDB.outputs.dynamoDB_ErrorNotification_name
+  #   DYNAMO_TABLE_PREFIX_LOOKUP = data.terraform_remote_state.dynamoDB.outputs.dynamoDB_PrefixLookupTable_name
+  #   SNS_TOPIC_ARN = data.terraform_remote_state.sns.outputs.sns_topic_arn
+   }
+
 }
+
 
 module "lambda_iam_role" {
   source       = "../module/iam_role"
@@ -64,6 +69,7 @@ module "valid_fufilment" {
   source             = "../module/lambda"
   filename           = "valid_fufilment_${var.env}.zip"
   name               = "valid_fufilment"
+  source_code_hash = data.archive_file.lambda_valid_fufilment_zip.output_base64sha256
   env                = var.env
   aws_region         = var.aws_region
   iam_role           = module.lambda_iam_role.iam_role_arn
@@ -72,7 +78,7 @@ module "valid_fufilment" {
   security_group_ids = [module.valid_fufilment_lambda_sg.security_group_id]
   subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
   environment_variables = {
-    NOTIF_SQS_NAME = data.terraform_remote_state.sqs.outputs.sqs_notification_name
+    # NOTIF_SQS_NAME = data.terraform_remote_state.sqs.outputs.sqs_notification_name
   }
 }
 
@@ -97,6 +103,7 @@ module "invalid_file" {
   source             = "../module/lambda"
   filename           = "invalid_file_${var.env}.zip"
   name               = "invalid_file"
+  source_code_hash = data.archive_file.lambda_invalidfile_zip.output_base64sha256
   env                = var.env
   aws_region         = var.aws_region
   iam_role           = module.lambda_iam_role.iam_role_arn
@@ -105,7 +112,7 @@ module "invalid_file" {
   security_group_ids = [module.invalid_file_lambda_sg.security_group_id]
   subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
   environment_variables = {
-    NOTIF_SQS_NAME = data.terraform_remote_state.sqs.outputs.sqs_notification_name
+    # NOTIF_SQS_NAME = data.terraform_remote_state.sqs.outputs.sqs_notification_name
   }
 }
 
@@ -129,6 +136,7 @@ module "notification" {
   source             = "../module/lambda"
   filename           = "notification_${var.env}.zip"
   name               = "notification"
+  source_code_hash = data.archive_file.lambda_notification_zip.output_base64sha256
   env                = var.env
   aws_region         = var.aws_region
   iam_role           = module.lambda_iam_role.iam_role_arn
@@ -137,8 +145,8 @@ module "notification" {
   security_group_ids = [module.notification_lambda_sg.security_group_id]
   subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
   environment_variables = {
-    SENDER_EMAIL = data.terraform_remote_state.sqs.outputs.sqs_notification_name
-    SWIMLANE = upper(var.env)
+    # SENDER_EMAIL = data.terraform_remote_state.sqs.outputs.sqs_notification_name
+    # SWIMLANE = upper(var.env)
   }  
 }
 

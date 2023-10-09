@@ -2,7 +2,8 @@ version: 0.2
 
 env:
   variables:
-     Environment: "dev"
+     env_name: "dev"
+     source_dir: "vpc_1 vpc_2 sqs"
   #parameter-store:
      # key: "value"
      # key: "value"
@@ -38,15 +39,18 @@ phases:
     commands:
       - echo "Entering build phase"
       # Loop through the directories containing your Terraform configurations
-      - |
-        for dir in asg_bastion lambda_s3; do
-          echo "Deploying Terraform configurations in $dir"
-          cd "$dir"
-          terraform init -input=false -backend-config=$Environment/backend.tfvars
-          terraform validate
-          terraform plan -input=false -out=tfplan
-          cd -
-        done
+      - echo $env_name
+      - chmod 777 deploy.sh
+      - ./deploy_plan.sh $env_name $source_dir
+      # - |
+      #   for dir in asg_bastion lambda_s3; do
+      #     echo "Deploying Terraform configurations in $dir"
+      #     cd "$dir"
+      #     terraform init -backend-config=$envi_name/backend.tfvars
+      #     terraform validate
+      #     terraform plan -var-file=$envi_name/$envi_name.tfvars -out=tfplan
+      #     cd -
+      #   done
   #post_build:
     #commands:
       # - command

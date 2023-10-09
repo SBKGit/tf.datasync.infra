@@ -2,7 +2,8 @@ version: 0.2
 
 env:
   variables:
-     Environment: "dev"
+     env_name: "dev"
+     source_dir: "vpc_1 vpc_2 sqs"
   #parameter-store:
      # key: "value"
      # key: "value"
@@ -23,22 +24,33 @@ phases:
     #runtime-versions:
       # name: version
       # name: version
-    # commands:
-    #   sudo yum install -y yum-utils shadow-utils
-    #   sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
-    #   sudo yum install -y terraform
+    #commands:
+      # - command
+      # - command
   pre_build:
     commands:
-      - yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
-      - yum install -y terraform
+      - echo "Entering pre_build phase"
+      # Install Terraform
+      - curl -o terraform.zip https://releases.hashicorp.com/terraform/1.5.6/terraform_1.5.6_linux_amd64.zip
+      - unzip terraform.zip
+      - chmod +x terraform
+      - mv terraform /usr/local/bin/
   build:
     commands:
-      - cd asg_bastion
-      - terraform init -backend-config=$Environment/backend.tfvars
-      - terraform apply -var-file=$Environment/$Environment.tfvars -auto-approve
-
-
-
+      - echo "Entering build phase"
+      # Loop through the directories containing your Terraform configurations
+      - echo $env_name
+      - chmod 777 deploy.sh
+      - ./deploy_apply.sh $env_name $source_dir
+      # - |
+      #   for dir in asg_bastion lambda_s3; do
+      #     echo "Deploying Terraform configurations in $dir"
+      #     cd "$dir"
+      #     terraform init -backend-config=$envi_name/backend.tfvars
+      #     terraform validate
+      #     terraform plan -var-file=$envi_name/$envi_name.tfvars -out=tfplan
+      #     cd -
+      #   done
   #post_build:
     #commands:
       # - command
