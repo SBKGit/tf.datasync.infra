@@ -39,6 +39,7 @@ data "archive_file" "start_source" {
 module "start_lambda" {
   source       = "../module/lambda"
   name         = "${var.app_name}_start_lambda"
+  source_code_hash   = data.archive_file.start_source.output_base64sha256
   env          = var.env
   iam_role     = module.lambda_iam_role.iam_role_arn
   runtime      = "python3.11"
@@ -60,6 +61,7 @@ module "stop_lambda" {
   source       = "../module/lambda"
   name         = "${var.app_name}_stop_lambda"
   env          = var.env
+  source_code_hash   = data.archive_file.stop_source.output_base64sha256
   iam_role     = module.lambda_iam_role.iam_role_arn
   runtime      = "python3.11"
   filename     = data.archive_file.stop_source.output_path
@@ -89,4 +91,21 @@ module "event_schedule_stop" {
   cron_expression = "cron(0 19 ? * MON-FRI *)"
   state = "enabled"
   
+}
+
+resource "aws_lambda_permission" "allow_start_cloudwatch" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = module.start_lambda.lambda_name
+  principal     = "events.amazonaws.com"
+  source_arn    = module.event_schedule_start.event_rule_arn
+}
+
+resource "aws_lambda_permission" "allow_stop_cloudwatch" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = module.stop_lambda.lambda_name
+  principal     = "events.amazonaws.com"
+  source_arn    = module.event_schedule_stop.event_rule_arn
+
 }
