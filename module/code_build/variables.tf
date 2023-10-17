@@ -10,10 +10,6 @@ variable "aws_region" {
 
 }
 
-variable "codebuild_type" {
-
-}
-
 variable "artifacts_type" {
   default = "NO_ARTIFACTS"
 }
