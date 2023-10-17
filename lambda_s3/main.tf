@@ -29,10 +29,10 @@ module "lambda_filename_prefix" {
   security_group_ids = [module.lambda_security_group.security_group_id]
   subnet_ids         = data.terraform_remote_state.vpc2.outputs.private_subnet_id
   environment_variables = {
-  #   DYNAMO_TABLE_ERROR_NOTIF = data.terraform_remote_state.dynamoDB.outputs.dynamoDB_ErrorNotification_name
-  #   DYNAMO_TABLE_PREFIX_LOOKUP = data.terraform_remote_state.dynamoDB.outputs.dynamoDB_PrefixLookupTable_name
-  #   SNS_TOPIC_ARN = data.terraform_remote_state.sns.outputs.sns_topic_arn
-   }
+    #   DYNAMO_TABLE_ERROR_NOTIF = data.terraform_remote_state.dynamoDB.outputs.dynamoDB_ErrorNotification_name
+    #   DYNAMO_TABLE_PREFIX_LOOKUP = data.terraform_remote_state.dynamoDB.outputs.dynamoDB_PrefixLookupTable_name
+    #   SNS_TOPIC_ARN = data.terraform_remote_state.sns.outputs.sns_topic_arn
+  }
 
 }
 
@@ -69,7 +69,7 @@ module "valid_fufilment" {
   source             = "../module/lambda"
   filename           = "valid_fufilment_${var.env}.zip"
   name               = "valid_fufilment"
-  source_code_hash = data.archive_file.lambda_valid_fufilment_zip.output_base64sha256
+  source_code_hash   = data.archive_file.lambda_valid_fufilment_zip.output_base64sha256
   env                = var.env
   aws_region         = var.aws_region
   iam_role           = module.lambda_iam_role.iam_role_arn
@@ -103,7 +103,7 @@ module "invalid_file" {
   source             = "../module/lambda"
   filename           = "invalid_file_${var.env}.zip"
   name               = "invalid_file"
-  source_code_hash = data.archive_file.lambda_invalidfile_zip.output_base64sha256
+  source_code_hash   = data.archive_file.lambda_invalidfile_zip.output_base64sha256
   env                = var.env
   aws_region         = var.aws_region
   iam_role           = module.lambda_iam_role.iam_role_arn
@@ -136,7 +136,7 @@ module "notification" {
   source             = "../module/lambda"
   filename           = "notification_${var.env}.zip"
   name               = "notification"
-  source_code_hash = data.archive_file.lambda_notification_zip.output_base64sha256
+  source_code_hash   = data.archive_file.lambda_notification_zip.output_base64sha256
   env                = var.env
   aws_region         = var.aws_region
   iam_role           = module.lambda_iam_role.iam_role_arn
@@ -147,7 +147,7 @@ module "notification" {
   environment_variables = {
     # SENDER_EMAIL = data.terraform_remote_state.sqs.outputs.sqs_notification_name
     # SWIMLANE = upper(var.env)
-  }  
+  }
 }
 
 module "notification_lambda_sg" {
@@ -245,7 +245,6 @@ module "event_rule" {
   env        = var.env
   aws_region = var.aws_region
   name       = var.name
-
   event_pattern = jsonencode({
     source : [
       "aws.s3"
@@ -253,12 +252,19 @@ module "event_rule" {
     detail-type : [
       "ObjectCreated:*"
     ],
-    resources : [module.s3_bucket_1.s3_arn, module.s3_bucket_3.s3_arn, module.s3_bucket_3.s3_arn
-    ]
+    resources : [module.s3_bucket_1.s3_arn]
   })
   target_arn = module.lambda_filename_prefix.lambda_arn
   target_id  = module.lambda_filename_prefix.lambda_name
 
 }
 
+resource "aws_lambda_permission" "allow_stop_cloudwatch" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = module.lambda_filename_prefix.lambda_name
+  principal     = "events.amazonaws.com"
+  source_arn    = module.event_rule.event_rule_arn
+
+}
 

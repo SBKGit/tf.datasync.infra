@@ -37,7 +37,7 @@ module "dynamoDB" {
       S = "Trapeze" # Use the appropriate DynamoDB data type (S for string in this example)
     },
     "TargetBucket" = {
-      S  ="opc-ticketer-data-dev" # Use the appropriate DynamoDB data type (S for string in this example)
+      S = "opc-ticketer-data-dev" # Use the appropriate DynamoDB data type (S for string in this example)
     },
     "TechSupportSuccessNotif" = {
       S = "Y" # Use the appropriate DynamoDB data type (S for string in this example)
@@ -70,7 +70,7 @@ module "ErrorNotification" {
       S = "shireesh.kantharaj@tfgm.com" # Use the appropriate DynamoDB data type (S for string in this example)
     },
     "TargetBucket" = {
-      S  = data.terraform_remote_state.lambda_s3.outputs.s3_bucket_name_4 # Use the appropriate DynamoDB data type (S for string in this example)
+      S = data.terraform_remote_state.lambda_s3.outputs.s3_bucket_name_4 # Use the appropriate DynamoDB data type (S for string in this example)
     }
     }
   )

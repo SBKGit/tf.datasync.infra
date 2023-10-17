@@ -44,9 +44,9 @@ variable "environment_variables" {
 
 variable "timeout" {
   default = 180
-  
+
 }
 
 variable "source_code_hash" {
-  
+
 }
