@@ -41,7 +41,6 @@ phases:
       # Loop through the directories containing your Terraform configurations
       - echo $env_name
       - chmod 777 deploy_*
-      - ./deploy_plan.sh $env_name $source_dir
       - ./deploy_apply.sh $env_name $source_dir
       # - |
       #   for dir in asg_bastion lambda_s3; do

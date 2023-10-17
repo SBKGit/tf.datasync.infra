@@ -6,7 +6,7 @@ for ((dir=2; dir <= $#; dir++));do
           echo "terraform init -backend-config=$1/backend.tfvars"
           terraform init -backend-config=$1/backend.tfvars
           terraform validate
-          echo "terraform destroy -var-file=$1/$1.tfvars -out=tfplan"
-          terraform destroy -var-file=$1/$1.tfvars -out=tfplan -auto-approve
+          echo "terraform destroy -var-file=$1/$1.tfvars"
+          terraform destroy -var-file=$1/$1.tfvars -auto-approve
           cd -
           done
