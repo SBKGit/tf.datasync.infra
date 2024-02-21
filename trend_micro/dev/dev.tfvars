@@ -1,14 +1,22 @@
 #common variables 
-name       = "transfer"
 env        = "dev"
 aws_region = "eu-west-2"
 
 #S3 bucket variables
-bucket_name      = ["landing-buckett-1", "landing-buckett-2", "landing-buckett-3", "error-zone-buckett"]
 acl              = "private"
 enable_lifecycle = true
-expiration_days  = 5
-status           = "Enabled"
+
+#landing zone s3 variable
+landing_zone_expiration_days  = 5
+landing_zone_status           = "Enabled"
+
+#To process s3 variable
+to_process_expiration_days  = 5
+to_process_status           = "Enabled"
+
+#Error zone s3 variable
+error_zone_expiration_days  = 5
+error_zone_status           = "Enabled"
 
 #lambda iam role variables
 path_name    = "/app/"
@@ -47,7 +55,6 @@ target_type = "lambda"
 
 
 handler_name = "test.js" #mention file name
-runtime      = "python3.11"
 
 action_items = ["ec2:DescribeInstances",
   "ec2:CreateNetworkInterface",

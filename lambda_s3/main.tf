@@ -250,9 +250,13 @@ module "event_rule" {
       "aws.s3"
     ],
     detail-type : [
-      "ObjectCreated:*"
+      "Object Created"
     ],
-    resources : [module.s3_bucket_1.s3_arn]
+    detail : {
+      bucket : {
+      name : [module.s3_bucket_1.s3_bucket_name]
+      }
+    }
   })
   target_arn = module.lambda_filename_prefix.lambda_arn
   target_id  = module.lambda_filename_prefix.lambda_name
